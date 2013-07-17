@@ -175,8 +175,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   DB_tool = DBTool.new
   Sketchup.active_model.select_tool DB_tool
 }
-cmd.small_icon = "icon.jpg"
-cmd.large_icon = "icon.jpg"
+cmd.small_icon = "images/icon.jpg"
+cmd.large_icon = "images/icon.jpg"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Special design"
 cmd.menu_text = "Digitales Bauen"
@@ -194,8 +194,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Top_view = TopView.new
   Sketchup.active_model.select_tool Top_view
 }
-cmd.small_icon = "Top.PNG"
-cmd.large_icon = "Top.PNG"
+cmd.small_icon = "images/Top.PNG"
+cmd.large_icon = "images/Top.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Top view"
 cmd.menu_text = "Digitales Bauen"
@@ -213,8 +213,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Bottom_view = BottomView.new
   Sketchup.active_model.select_tool Bottom_view
 }
-cmd.small_icon = "Bottom.PNG"
-cmd.large_icon = "Bottom.PNG"
+cmd.small_icon = "images/Bottom.PNG"
+cmd.large_icon = "images/Bottom.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Bottom view"
 cmd.menu_text = "Digitales Bauen"
@@ -232,8 +232,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Front_view = FrontView.new
   Sketchup.active_model.select_tool Front_view
 }
-cmd.small_icon = "Front.PNG"
-cmd.large_icon = "Front.PNG"
+cmd.small_icon = "images/Front.PNG"
+cmd.large_icon = "images/Front.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Front view"
 cmd.menu_text = "Digitales Bauen"
@@ -251,8 +251,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Back_view = BackView.new
   Sketchup.active_model.select_tool Back_view
 }
-cmd.small_icon = "Back.PNG"
-cmd.large_icon = "Back.PNG"
+cmd.small_icon = "images/Back.PNG"
+cmd.large_icon = "images/Back.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Back view"
 cmd.menu_text = "Digitales Bauen"
@@ -270,8 +270,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Iso_view = IsoView.new
   Sketchup.active_model.select_tool Iso_view
 }
-cmd.small_icon = "Iso.PNG"
-cmd.large_icon = "Iso.PNG"
+cmd.small_icon = "images/Iso.PNG"
+cmd.large_icon = "images/Iso.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Iso view"
 cmd.menu_text = "Digitales Bauen"
@@ -289,8 +289,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Left_view = LeftView.new
   Sketchup.active_model.select_tool Left_view
 }
-cmd.small_icon = "Left.PNG"
-cmd.large_icon = "Left.PNG"
+cmd.small_icon = "images/Left.PNG"
+cmd.large_icon = "images/Left.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Left view"
 cmd.menu_text = "Digitales Bauen"
@@ -308,8 +308,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Right_view = RightView.new
   Sketchup.active_model.select_tool Right_view
 }
-cmd.small_icon = "Right.PNG"
-cmd.large_icon = "Right.PNG"
+cmd.small_icon = "images/Right.PNG"
+cmd.large_icon = "images/Right.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Right view"
 cmd.menu_text = "Digitales Bauen"
