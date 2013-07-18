@@ -5,7 +5,7 @@ class AttrReporter
   def set_up(filename)
     @group_list = []
     @component_list = []
-    @dictionary_name = "dboh"
+    @dictionary_name = "o.h"
     @report_data = []
     @totals_by_att_name = {}
     @report_attribute_list = []
