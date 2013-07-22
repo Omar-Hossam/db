@@ -186,6 +186,7 @@ toolbar.show
 cmd = UI::Command.new("Digitales Bauen") { 
   class TopView
     def activate
+      cam = Sketchup.active_model.active_view.camera
       Sketchup.send_action("viewTop:")
       cam.perspective = false
     end  
@@ -205,6 +206,7 @@ toolbar.show
 cmd = UI::Command.new("Digitales Bauen") { 
   class BottomView
     def activate
+      cam = Sketchup.active_model.active_view.camera
       Sketchup.send_action("viewBottom:")
       cam.perspective = false
     end  
@@ -224,6 +226,7 @@ toolbar.show
 cmd = UI::Command.new("Digitales Bauen") { 
   class FrontView
     def activate
+      cam = Sketchup.active_model.active_view.camera
       Sketchup.send_action("viewFront:")
       cam.perspective = false
     end  
@@ -243,6 +246,7 @@ toolbar.show
 cmd = UI::Command.new("Digitales Bauen") { 
   class BackView
     def activate
+      cam = Sketchup.active_model.active_view.camera
       Sketchup.send_action("viewBack:")
       cam.perspective = false
     end  
@@ -262,6 +266,7 @@ toolbar.show
 cmd = UI::Command.new("Digitales Bauen") { 
   class IsoView
     def activate
+      cam = Sketchup.active_model.active_view.camera
       Sketchup.send_action("viewIso:")
       cam.perspective = false
     end  
@@ -281,6 +286,7 @@ toolbar.show
 cmd = UI::Command.new("Digitales Bauen") { 
   class LeftView
     def activate
+      cam = Sketchup.active_model.active_view.camera
       Sketchup.send_action("viewLeft:")
       cam.perspective = false
     end  
@@ -300,6 +306,7 @@ toolbar.show
 cmd = UI::Command.new("Digitales Bauen") { 
   class RightView
     def activate
+      cam = Sketchup.active_model.active_view.camera
       Sketchup.send_action("viewRight:")
       cam.perspective = false
     end  
@@ -312,6 +319,66 @@ cmd.small_icon = "images/Right.PNG"
 cmd.large_icon = "images/Right.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Right view"
+cmd.menu_text = "Digitales Bauen"
+toolbar = toolbar.add_item cmd
+toolbar.show
+
+cmd = UI::Command.new("Digitales Bauen") { 
+  class Rotate
+    def activate
+      cmp = Sketchup.active_model.selection.first
+      pt1 = Geom::Point3d.new
+      vector = Geom::Vector3d.new 0,0,1
+      p = Math::PI
+      transformation = Geom::Transformation.rotation pt1, vector, 0.5*p
+      cmp.transform! transformation
+    end  
+  end
+
+  rotato = Rotate.new
+  Sketchup.active_model.select_tool rotato
+}
+cmd.small_icon = ""
+cmd.large_icon = ""
+cmd.tooltip = "Digitales Bauen Toolbars"
+cmd.status_bar_text = "rotate"
+cmd.menu_text = "Digitales Bauen"
+toolbar = toolbar.add_item cmd
+toolbar.show
+
+cmd = UI::Command.new("Digitales Bauen") { 
+  class MakeView
+    def activate
+      ss = Sketchup.active_model.selection
+      bayez = false
+      ss.each do |s|
+        if s.typename != "ComponentInstance"
+          byaez = true
+        end
+      end
+      if bayez == true
+        UI.messagebox("Not all selected objects are components. Please make components first")
+        return
+      else
+        $value = ""
+        prompts = ["View Number"]
+        values = [$value]
+        results = inputbox prompts, values, "Make View"
+        return if not results
+        $value = results[0]
+        
+        
+      end
+    end  
+  end
+
+  Make_View = MakeView.new
+  Sketchup.active_model.select_tool Make_View
+}
+cmd.small_icon = "images/view.PNG"
+cmd.large_icon = "images/view.PNG"
+cmd.tooltip = "Digitales Bauen Toolbars"
+cmd.status_bar_text = "Make a view"
 cmd.menu_text = "Digitales Bauen"
 toolbar = toolbar.add_item cmd
 toolbar.show
