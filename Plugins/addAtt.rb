@@ -33,42 +33,42 @@ end
 def get_type(name)
   spn = name.split('')
   cmp_type = ""
-  if spn[3] == 'F'
-    if spn[4] == 'n'
+  if spn[4] == 'F'
+    if spn[5] == 'n'
       cmp_class = "component"
-      if spn[6] == 'F'
+      if spn[7] == 'F'
         cmp_type = "Fume Cupboard"
-      elsif spn[6] == 'B'
+      elsif spn[7] == 'B'
         cmp_type = "Benchtop"
-      elsif spn[6] == 'T'
+      elsif spn[7] == 'T'
         cmp_type = "Table"
-      elsif spn[6] == 'M'
+      elsif spn[7] == 'M'
         cmp_type = "Miscellaenous"
-      elsif spn[6] = 'S'
-        if spn[7] == 'v'
+      elsif spn[7] = 'S'
+        if spn[8] == 'v'
           cmp_type = "Service System"
-        elsif spn[7] == 'u'
+        elsif spn[8] == 'u'
           cmp_type = "Benchtop Support System"
-        elsif spn[7] == 't'
+        elsif spn[8] == 't'
           cmp_type = "Storage"
-        elsif spn[7] == 'i'
+        elsif spn[8] == 'i'
           cmp_type = "Sinkmodule"
         end
       end
-    elsif spn[4] == 'l'
+    elsif spn[5] == 'l'
       cmp_class = "floor"
     end
-  elsif spn[3] == 'M'
+  elsif spn[4] == 'M'
     cmp_class = "component"
     cmp_type = "Media"
-  elsif spn[3] == 'E'
+  elsif spn[4] == 'E'
     cmp_class = "component"
     cmp_type = "Equipment"
-  elsif spn[3] = 'B'
+  elsif spn[4] = 'B'
     cmp_class = "building"
-  elsif spn[3] = 'R'
+  elsif spn[4] = 'R'
     cmp_class = "room"
-  elsif spn[3] = 'V'
+  elsif spn[4] = 'V'
     cmp_class = "view"
   else
     cmp_class = nil
@@ -214,7 +214,6 @@ def set_cmp_att(cmp, type)
   cmp.set_attribute 'o.h', "Supplier", $cmpSuppl
   cmp.set_attribute 'o.h', "ID from Supplier", $cmpSupplID
   cmp.set_attribute 'o.h', "Price from Supplier", $cmpSupplPrice
-  cmp.set_attribute 'o.h', "cmpClass", $cmpClass
   cmp.set_attribute 'o.h', "Position", $cmpPos
   cmp.set_attribute 'o.h', "Number", $cmpNo
 
@@ -224,6 +223,13 @@ def set_cmp_att(cmp, type)
     $xCmpOffset = f.x
     $yCmpOffset = f.y
     $zCmpOffset = f.z
+  else
+    vxo = cmp.get_attribute 'o.h', "View x Offset"
+    vyo = cmp.get_attribute 'o.h', "View y Offset"
+    vzo = cmp.get_attribute 'o.h', "View z Offset"
+    $xCmpOffset = f.x - vxo
+    $yCmpOffset = f.y - vyo
+    $zCmpOffset = f.z - vzo
   end
   cmp.set_attribute 'o.h', "Component x Offset", $xCmpOffset
   cmp.set_attribute 'o.h', "Component y Offset", $yCmpOffset
@@ -238,6 +244,7 @@ def set_cmp_att(cmp, type)
   cmp.set_attribute 'o.h', "Width", $cmpWidth
   cmp.set_attribute 'o.h', "Depth", $cmpDepth
   cmp.set_attribute 'o.h', "Height", $cmpHeight
+  cmp.set_attribute 'o.h', "cmpID", 0
 
   UI.messagebox("Attributes added")
 

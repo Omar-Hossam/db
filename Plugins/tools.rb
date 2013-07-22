@@ -351,23 +351,67 @@ cmd = UI::Command.new("Digitales Bauen") {
     def activate
       ss = Sketchup.active_model.selection
       bayez = false
+      bawazan = false
       ss.each do |s|
         if s.typename != "ComponentInstance"
           byaez = true
         end
+        cmpv = s.get_attribute 'o.h', "Component Name"
+        if(cmpv.nil?)
+          bawazan = true
+        end
       end
-      if bayez == true
+      if ss.empty?
+        UI.messagebox("Nothing is selected, please select an object first")
+        return
+      elsif bayez == true
         UI.messagebox("Not all selected objects are components. Please make components first")
         return
+      elsif bawazan == true
+        UI.messagebox("One or more of the components selected don't have attributes. Please make sure to add attributes to all components first")
       else
         $value = ""
-        prompts = ["View Number"]
-        values = [$value]
+        $depthOffset = 0.00
+        $heightOffset = 0.00
+        prompts = ["View Number", "Depth Offset", "Height Offset"]
+        values = [$value, $depthOffset, $heightOffset]
         results = inputbox prompts, values, "Make View"
         return if not results
         $value = results[0]
-        
-        
+        $depthOffset = results[1]
+        $heightOffset = results[2]
+        group = Sketchup.active_model.active_entities.add_group(ss)
+        $xViewOffset = group.transformation.origin.x
+        $yViewOffset = group.transformation.origin.y
+        $zViewOffset = group.transformation.origin.z
+        gg = group.entities
+        gg.each do |g|
+          x = g.get_attribute 'o.h', "Component x Offset"
+          $xCmpOffset = x - $xViewOffset
+          y = g.get_attribute 'o.h', "Component y Offset"
+          $yCmpOffset = y - $yViewOffset
+          z = g.get_attribute 'o.h', "Component z Offset"
+          $zCmpOffset = z - $zViewOffset
+          g.set_attribute 'o.h', "Component x Offset", $xCmpOffset
+          g.set_attribute 'o.h', "Component y Offset", $yCmpOffset
+          g.set_attribute 'o.h', "Component z Offset", $zCmpOffset
+          g.set_attribute 'o.h', "View Number", $value
+          g.set_attribute 'o.h', "View x Offset", $xViewOffset
+          g.set_attribute 'o.h', "View y Offset", $yViewOffset
+          g.set_attribute 'o.h', "View z Offset", $zViewOffset
+          g.set_attribute 'o.h', "Depth Offset", $depthOffset
+          g.set_attribute 'o.h', "Height Offset", $heightOffset
+        end
+ 
+        cmp = group.to_component
+        cmp.definition.name = "cLabView"
+        cmp.set_attribute 'o.h', "View Number", $value
+        cmp.set_attribute 'o.h', "View x Offset", $xViewOffset
+        cmp.set_attribute 'o.h', "View y Offset", $yViewOffset
+        cmp.set_attribute 'o.h', "View z Offset", $zViewOffset
+        cmp.set_attribute 'o.h', "Depth Offset", $depthOffset
+        cmp.set_attribute 'o.h', "Height Offset", $heightOffset
+        UI.messagebox("View created")
       end
     end  
   end
