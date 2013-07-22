@@ -16,16 +16,11 @@ def self.add_attributes
     if cmp_class == nil || cmp_type == nil
       UI.messagebox("Component name not clear")
       return
-    elsif cmp_class == "buliding"
-      set_bld_att(ss.first)
-    elsif cmp_class == "floor"
-      set_flr_att(ss.first)
-    elsif cmp_class == "room"
-      set_rom_att(ss.first)
-    elsif cmp_class == "view"
-      set_viw_att(ss.first)
-    else
+    elsif cmp_class = "component"
       set_cmp_att(ss.first, cmp_type)
+    else
+      UI.messagebox("Selected object's class is not suitable for attribute addition. You may would like to visit 'Edit attributes'")
+      return
     end
   end
 end
