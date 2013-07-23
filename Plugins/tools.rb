@@ -23,95 +23,46 @@ cmd = UI::Command.new("Digitales Bauen") {
     # end
 
     def getMenu(menu)
-      menu.add_item("Edit attributes") {
-        model = Sketchup.active_model.selection
-        m = model[0]
-        at = m.attribute_dictionary "dboh"
-        if at == nil
-          UI.messagebox("Sorry, no attributes added yet")
+      menu.add_item("Edit attributes2") {
+        s = Sketchup.active_model.selection
+        ss = s.first
+        if s.empty?
+          UI.messagebox("Nothing is selected, please select an object first")
+          return
+        elsif s[1] != nil
+          UI.messagebox("More than one instance is selected. Please select only one instance")
+          return
+        elsif ss.typename != "ComponentInstance"
+          UI.messagebox("This is not a component. Entities should be grouped in components to have attributes")
+          return
         else
-          ss = Sketchup.active_model.selection
-          return if ss.empty?
-
-          $LabelementWorkdist = ss[0].get_attribute 'dboh', "LabelementWorkdist"
-          $LabelementWalkdist = ss[0].get_attribute 'dboh', "LabelementWalkdist"
-          $Width = ss[0].get_attribute 'dboh', "Width"
-          $Depth = ss[0].get_attribute 'dboh', "Depth"
-          $Height = ss[0].get_attribute 'dboh', "Height"
-          $Containmentmaterial = ss[0].get_attribute 'dboh', "Containmentmaterial"
-          $Deskfront = ss[0].get_attribute 'dboh', "Deskfront"
-          $Benchfront = ss[0].get_attribute 'dboh', "Benchfront"
-          $Sinkmaterial = ss[0].get_attribute 'dboh', "Sinkmaterial"
-          $Extractiontype = ss[0].get_attribute 'dboh', "Extractiontype"
-          $Gastaptype = ss[0].get_attribute 'dboh', "Gastaptype"
-          $Drainagetype = ss[0].get_attribute 'dboh', "Drainagetype"
-          $Liquidtaptype = ss[0].get_attribute 'dboh', "Liquidtaptype"
-          $HVtype = ss[0].get_attribute 'dboh', "HVtype"
-          $LVtype = ss[0].get_attribute 'dboh', "LVtype"
-          $Comtype = ss[0].get_attribute 'dboh', "Comtype"
-          $XPos = ss[0].get_attribute 'dboh', "XPos"
-          $YPos = ss[0].get_attribute 'dboh', "YPos"
-          $ZPos = ss[0].get_attribute 'dboh', "ZPos"
-
-          prompts = ["LabelementWorkdist", "LabelementWalkdist",
-            "Width", "Depth", "Height", "Containmentmaterial", "Deskfront",
-            "Benchfront", "Sinkmaterial", "Extractiontype", "Gastaptype",
-            "Drainagetype", "Liquidtaptype", "HVtype", "LVtype", "Comtype",
-            "XPos", "YPos", "ZPos"]
-          values = [$LabelementWorkdist, $LabelementWalkdist, $Width,
-            $Depth, $Height, $Containmentmaterial, $Deskfront, $Benchfront,
-            $Sinkmaterial, $Extractiontype, $Gastaptype, $Drainagetype,
-            $Liquidtaptype, $HVtype, $LVtype, $Comtype, $XPos, $YPos, $ZPos]
-          results = inputbox prompts, values, "Edit Attributes"
-          return if not results
-
-          $LabelementWorkdist = results[0]
-          $LabelementWalkdist = results[1]
-          $Width = results[2]
-          $Depth = results[3]
-          $Height = results[4]
-          $Containmentmaterial = results[5]
-          $Deskfront = results[6]
-          $Benchfront = results[7]
-          $Sinkmaterial = results[8]
-          $Extractiontype = results[9]
-          $Gastaptype = results[10]
-          $Drainagetype = results[11]
-          $Liquidtaptype = results[12]
-          $HVtype = results[13]
-          $LVtype = results[14]
-          $Comtype = results[15]
-          $XPos = results[16]
-          $YPos = results[17]
-          $ZPos = results[18]
-
-          ss.each do |e|
-            e.set_attribute 'dboh', "XPos", $XPos
-            e.set_attribute 'dboh', "YPos", $YPos
-            e.set_attribute 'dboh', "ZPos", $ZPos
-            e.set_attribute 'dboh', "LabelementWorkdist", $LabelementWorkdist
-            e.set_attribute 'dboh', "LabelementWalkdist", $LabelementWalkdist
-            e.set_attribute 'dboh', "Width", $Width
-            e.set_attribute 'dboh', "Depth", $Depth
-            e.set_attribute 'dboh', "Height", $Height
-            e.set_attribute 'dboh', "Containmentmaterial", $Containmentmaterial
-            e.set_attribute 'dboh', "Deskfront", $Deskfront
-            e.set_attribute 'dboh', "Benchfront", $Benchfront
-            e.set_attribute 'dboh', "Sinkmaterial", $Sinkmaterial
-            e.set_attribute 'dboh', "Extractiontype", $Extractiontype
-            e.set_attribute 'dboh', "Gastaptype", $Gastaptype
-            e.set_attribute 'dboh', "Drainagetype", $Drainagetype
-            e.set_attribute 'dboh', "Liquidtaptype", $Liquidtaptype
-            e.set_attribute 'dboh', "HVtype", $HVtype
-            e.set_attribute 'dboh', "LVtype", $LVtype
-            e.set_attribute 'dboh', "Comtype", $Comtype
-
+          at = ss.attribute_dictionary "o.h"
+          if at.nil?
+            UI.messagebox("Sorry, no attributes added yet")
+          else
+            at = ss.attribute_dictionary "o.h"
+            ks = at.keys
+            vals = []
+            ks.each do |k|
+              vals << (ss.get_attribute "o.h", k)
+            end
+            prompts = ks
+            values = vals
+            results = inputbox prompts, values, "Edit 2"
+            return if not results
+            index = 0
+            ks.each do |k|
+              ss.set_attribute 'o.h', k, results[index]
+              index = index + 1
+            end
+            UI.messagebox("Attributes edits applied")
+          end
+        end
+      }
+      menu.add_item("Edit attributes") {
             pt = Geom::Point3d.new($XPos,$YPos,$ZPos)
             t = Geom::Transformation.new(pt)
             e.transformation= t
-          end
-          UI.messagebox("Attributes edits applied")
-        end
       }
       menu.add_item("Zoom to slection"){
         selection = Sketchup.active_model.selection
@@ -154,7 +105,7 @@ cmd = UI::Command.new("Digitales Bauen") {
       if model.empty?
         UI.messagebox("Nothing is selected, please select an object first")
         return
-      elsif ss[1] != nil
+      elsif model[1] != nil
         UI.messagebox("More than one instance is selected. Please select only one instance")
         return
       elsif model.first.typename != "ComponentInstance"
