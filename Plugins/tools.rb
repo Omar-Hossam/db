@@ -151,18 +151,29 @@ cmd = UI::Command.new("Digitales Bauen") {
 
     def onLButtonDoubleClick(flags, x, y, view)
       model = Sketchup.active_model.selection
-      m = model[0]
-      at = m.attribute_dictionary "dboh"
-      if at == nil
-        UI.messagebox("Sorry, no attributes added yet")
+      if model.empty?
+        UI.messagebox("Nothing is selected, please select an object first")
+        return
+      elsif ss[1] != nil
+        UI.messagebox("More than one instance is selected. Please select only one instance")
+        return
+      elsif model.first.typename != "ComponentInstance"
+        UI.messagebox("This is not a component. Entities should be grouped in components to have attributes")
+        return
       else
-        ks = at.keys
-        message = ""
-        ks.each do |k|
-          val = m.get_attribute "dboh", k
-          message += k.to_s + ": " + val.to_s + "\n"
+        m = model[0]
+        at = m.attribute_dictionary "o.h"
+        if at == nil
+          UI.messagebox("Sorry, no attributes added yet")
+        else
+          ks = at.keys
+          message = ""
+          ks.each do |k|
+            val = m.get_attribute "o.h", k
+            message += k.to_s + ": " + val.to_s + "\n"
+          end
+          UI.messagebox(message)
         end
-        UI.messagebox(message)
       end
     end
   end
@@ -343,6 +354,7 @@ toolbar.show
 
 cmd = UI::Command.new("Digitales Bauen") { 
   class MakeView
+    vnos = []
     def activate
       ss = Sketchup.active_model.selection
       bayez = false

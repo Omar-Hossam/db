@@ -9,7 +9,7 @@ def self.add_attributes
     UI.messagebox("These elements are not grouped. please group into a component first")
     return
   elsif ss[1] != nil
-    UI.messagebox("More than one instance are selected. Please select only one instance")
+    UI.messagebox("More than one instance is selected. Please select only one instance")
     return
   else
     cmp_class, cmp_type = get_type(ss.first.definition.name)
@@ -28,48 +28,52 @@ end
 def get_type(name)
   spn = name.split('')
   cmp_type = ""
-  if spn[4] == 'F'
-    if spn[5] == 'n'
-      cmp_class = "component"
-      if spn[7] == 'F'
-        cmp_type = "Fume Cupboard"
-      elsif spn[7] == 'B'
-        cmp_type = "Benchtop"
-      elsif spn[7] == 'T'
-        cmp_type = "Table"
-      elsif spn[7] == 'M'
-        cmp_type = "Miscellaenous"
-      elsif spn[7] = 'S'
-        if spn[8] == 'v'
-          cmp_type = "Service System"
-        elsif spn[8] == 'u'
-          cmp_type = "Benchtop Support System"
-        elsif spn[8] == 't'
-          cmp_type = "Storage"
-        elsif spn[8] == 'i'
-          cmp_type = "Sinkmodule"
+  if spn[0] == 'c' && spn[1] == 'L' && spn[2] == 'a' && spn[3] == 'b'
+    if spn[4] == 'F'
+      if spn[5] == 'n'
+        cmp_class = "component"
+        if spn[7] == 'F'
+          cmp_type = "Fume Cupboard"
+        elsif spn[7] == 'B'
+          cmp_type = "Benchtop"
+        elsif spn[7] == 'T'
+          cmp_type = "Table"
+        elsif spn[7] == 'M'
+          cmp_type = "Miscellaenous"
+        elsif spn[7] = 'S'
+          if spn[8] == 'v'
+            cmp_type = "Service System"
+          elsif spn[8] == 'u'
+            cmp_type = "Benchtop Support System"
+          elsif spn[8] == 't'
+            cmp_type = "Storage"
+          elsif spn[8] == 'i'
+            cmp_type = "Sinkmodule"
+          end
         end
+      elsif spn[5] == 'l'
+        cmp_class = "floor"
       end
-    elsif spn[5] == 'l'
-      cmp_class = "floor"
+    elsif spn[4] == 'M'
+      cmp_class = "component"
+      cmp_type = "Media"
+    elsif spn[4] == 'E'
+      cmp_class = "component"
+      cmp_type = "Equipment"
+    elsif spn[4] = 'B'
+      cmp_class = "building"
+    elsif spn[4] = 'R'
+      cmp_class = "room"
+    elsif spn[4] = 'V'
+      cmp_class = "view"
+    else
+      cmp_class = nil
+      cmp_type = nil
     end
-  elsif spn[4] == 'M'
-    cmp_class = "component"
-    cmp_type = "Media"
-  elsif spn[4] == 'E'
-    cmp_class = "component"
-    cmp_type = "Equipment"
-  elsif spn[4] = 'B'
-    cmp_class = "building"
-  elsif spn[4] = 'R'
-    cmp_class = "room"
-  elsif spn[4] = 'V'
-    cmp_class = "view"
+    return cmp_class,  cmp_type
   else
-    cmp_class = nil
-    cmp_type = nil
+    return
   end
-  return cmp_class,  cmp_type
 end
 
 def set_cmp_att(cmp, type)
