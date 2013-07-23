@@ -84,23 +84,35 @@ def set_cmp_att(cmp, type)
   
   if type == "Fume Cupboard"
     materials = ["unspecified", "PP", "PVDF", "1.4301(V2A)"]
-    prompts = ["Fume Cupboard Containment Material", "Workspacedepth",
-      "Walkspacedepth", "Price", "Supplier", "ID from Supplier",
-      "Price from Supplier", "Position", "Number"]
-    values = [materials[0], $cmpWorkdist, $cmpWalkdist, $cmpPrice, $cmpSuppl,
-      $cmpSupplID, $cmpSupplPrice, $cmPos, $cmpNo]
-    enums = [materials.join("|")]
-    results = inputbox prompts, values, enums, "Add Component Attributes"
-    return if not results
-    $cmpWorkdist = results[1]
-    $cmpWalkdist = results[2]
-    $cmpPrice = results[3]
-    $cmpSuppl = results[4]
-    $cmpSupplID = results[5]
-    $cmpSupplPrice = results[6]
-    $cmpPos = results[7]
-    $cmpNo = results[8]
-
+    while true
+      prompts = ["Fume Cupboard Containment Material", "Workspacedepth",
+        "Walkspacedepth", "Price", "Supplier", "ID from Supplier",
+        "Price from Supplier", "Position", "Number"]
+      values = [materials[0], $cmpWorkdist, $cmpWalkdist, $cmpPrice, $cmpSuppl,
+        $cmpSupplID, $cmpSupplPrice, $cmPos, $cmpNo]
+      enums = [materials.join("|")]
+      results = inputbox prompts, values, enums, "Add Component Attributes"
+      return if not results
+      $cmpWorkdist = results[1]
+      $cmpWalkdist = results[2]
+      $cmpPrice = results[3]
+      $cmpSuppl = results[4]
+      $cmpSupplID = results[5]
+      $cmpSupplPrice = results[6]
+      $cmpPos = results[7]
+      $cmpNo = results[8]
+      if $cmpWorkdist.empty?
+        UI.messagebox("Workspacedepth can't be blank")
+      elsif $cmpWalkdist.empty?
+        UI.messagebox("Walkspacedepth can't be blank")
+      elsif $cmpPos == 0
+        UI.messagebox("Position can't be zero")
+      elsif $cmpNo == 0
+        UI.messagebox("Number can't be zero")
+      else
+        break
+      end
+    end
     index = materials.index(results[0])
     $fntFcContainmentMaterial = materials[index]
     cmp.set_attribute 'o.h', "Fume Cupboard Containment Material", $fntFcContainmentMaterial
@@ -114,23 +126,35 @@ def set_cmp_att(cmp, type)
       "1-drawer-1-left-hinged-door", "1-drawer-1-right-hinged-door",
       "1-small-drawer-2-medium-drawers", "1-small-drawer-1-large-drawers",
       "2-drawers", "3-drawers", "4-drawers"]
-    prompts = ["Desk Front", "Bench Front", "Workspacedepth", "Walkspacedepth",
-      "Price", "Supplier", "ID from Supplier", "Price from Supplier",
-      "Position", "Number"]
-    values = [desks[0], benches[0], $cmpWorkdist, $cmpWalkdist, $cmpPrice,
-    $cmpSuppl, $cmpSupplID, $cmpSupplPrice, $cmPos, $cmpNo]
-    enums = [desks.join("|"), benches.join("|")]
-    results = inputbox prompts, values, enums, "Add Component Attributes"
-    return if not results
-    $cmpWorkdist = results[2]
-    $cmpWalkdist = results[3]
-    $cmpPrice = results[4]
-    $cmpSuppl = results[5]
-    $cmpSupplID = results[6]
-    $cmpSupplPrice = results[7]
-    $cmpPos = results[8]
-    $cmpNo = results[9]
-
+    while true
+      prompts = ["Desk Front", "Bench Front", "Workspacedepth", "Walkspacedepth",
+        "Price", "Supplier", "ID from Supplier", "Price from Supplier",
+        "Position", "Number"]
+      values = [desks[0], benches[0], $cmpWorkdist, $cmpWalkdist, $cmpPrice,
+        $cmpSuppl, $cmpSupplID, $cmpSupplPrice, $cmPos, $cmpNo]
+      enums = [desks.join("|"), benches.join("|")]
+      results = inputbox prompts, values, enums, "Add Component Attributes"
+      return if not results
+      $cmpWorkdist = results[2]
+      $cmpWalkdist = results[3]
+      $cmpPrice = results[4]
+      $cmpSuppl = results[5]
+      $cmpSupplID = results[6]
+      $cmpSupplPrice = results[7]
+      $cmpPos = results[8]
+      $cmpNo = results[9]
+      if $cmpWorkdist.empty?
+        UI.messagebox("Workspacedepth can't be blank")
+      elsif $cmpWalkdist.empty?
+        UI.messagebox("Walkspacedepth can't be blank")
+      elsif $cmpPos == 0
+        UI.messagebox("Position can't be zero")
+      elsif $cmpNo == 0
+        UI.messagebox("Number can't be zero")
+      else
+        break
+      end
+    end
     index = desks.index(results[0])
     index2 = benches.index(results[1])
     $fntDeskfront = desks[index]
@@ -141,23 +165,35 @@ def set_cmp_att(cmp, type)
   elsif type == "Benchtop"
     materials = ["unspecified", "Melamine", "EBC-Worktop", "PP", "Glass",
       "1.4301(V2A)", "Ceramic", "Ceramic marine Edge", "Epoxy"]
-    prompts = ["Benchtop Material", "Workspacedepth", "Walkspacedepth",
-      "Price", "Supplier", "ID from Supplier", "Price from Supplier",
-      "Position", "Number"]
-    values = [materials[0], $cmpWorkdist, $cmpWalkdist, $cmpPrice, $cmpSuppl,
-      $cmpSupplID, $cmpSupplPrice, $cmPos, $cmpNo]
-    enums = [materials.join("|")]
-    results = inputbox prompts, values, enums, "Add Component Attributes"
-    return if not results
-    $cmpWorkdist = results[1]
-    $cmpWalkdist = results[2]
-    $cmpPrice = results[3]
-    $cmpSuppl = results[4]
-    $cmpSupplID = results[5]
-    $cmpSupplPrice = results[6]
-    $cmpPos = results[7]
-    $cmpNo = results[8]
-
+    while true
+      prompts = ["Benchtop Material", "Workspacedepth", "Walkspacedepth",
+        "Price", "Supplier", "ID from Supplier", "Price from Supplier",
+        "Position", "Number"]
+      values = [materials[0], $cmpWorkdist, $cmpWalkdist, $cmpPrice, $cmpSuppl,
+        $cmpSupplID, $cmpSupplPrice, $cmPos, $cmpNo]
+      enums = [materials.join("|")]
+      results = inputbox prompts, values, enums, "Add Component Attributes"
+      return if not results
+      $cmpWorkdist = results[1]
+      $cmpWalkdist = results[2]
+      $cmpPrice = results[3]
+      $cmpSuppl = results[4]
+      $cmpSupplID = results[5]
+      $cmpSupplPrice = results[6]
+      $cmpPos = results[7]
+      $cmpNo = results[8]
+      if $cmpWorkdist.empty?
+        UI.messagebox("Workspacedepth can't be blank")
+      elsif $cmpWalkdist.empty?
+        UI.messagebox("Walkspacedepth can't be blank")
+      elsif $cmpPos == 0
+        UI.messagebox("Position can't be zero")
+      elsif $cmpNo == 0
+        UI.messagebox("Number can't be zero")
+      else
+        break
+      end
+    end
     index = materials.index(results[0])
     $fntBtpMaterial = materials[index]
     cmp.set_attribute 'o.h', "Benchtop Material", $fntBtpMaterial
@@ -165,42 +201,67 @@ def set_cmp_att(cmp, type)
   elsif type == "Sinkmodule"
     materials = ["unspecified", "Full-PP", "Full-1.4301(V2A)", "Full-Ceramic",
       "EBC-PP", "EBC-1.4301(V2A)", "EBC-Ceramic"]
-    prompts = ["Sink Material", "Workspacedepth", "Walkspacedepth",
-      "Price", "Supplier", "ID from Supplier", "Price from Supplier",
-      "Position", "Number"]
-    values = [materials[0], $cmpWorkdist, $cmpWalkdist, $cmpPrice, $cmpSuppl,
-      $cmpSupplID, $cmpSupplPrice, $cmPos, $cmpNo]
-    enums = [materials.join("|")]
-    results = inputbox prompts, values, enums, "Add Component Attributes"
-    return if not results
-    $cmpWorkdist = results[1]
-    $cmpWalkdist = results[2]
-    $cmpPrice = results[3]
-    $cmpSuppl = results[4]
-    $cmpSupplID = results[5]
-    $cmpSupplPrice = results[6]
-    $cmpPos = results[7]
-    $cmpNo = results[8]
-
+    while true
+      prompts = ["Sink Material", "Workspacedepth", "Walkspacedepth",
+        "Price", "Supplier", "ID from Supplier", "Price from Supplier",
+        "Position", "Number"]
+      values = [materials[0], $cmpWorkdist, $cmpWalkdist, $cmpPrice, $cmpSuppl,
+        $cmpSupplID, $cmpSupplPrice, $cmPos, $cmpNo]
+      enums = [materials.join("|")]
+      results = inputbox prompts, values, enums, "Add Component Attributes"
+      return if not results
+      $cmpWorkdist = results[1]
+      $cmpWalkdist = results[2]
+      $cmpPrice = results[3]
+      $cmpSuppl = results[4]
+      $cmpSupplID = results[5]
+      $cmpSupplPrice = results[6]
+      $cmpPos = results[7]
+      $cmpNo = results[8]
+      if $cmpWorkdist.empty?
+        UI.messagebox("Workspacedepth can't be blank")
+      elsif $cmpWalkdist.empty?
+        UI.messagebox("Walkspacedepth can't be blank")
+      elsif $cmpPos == 0
+        UI.messagebox("Position can't be zero")
+      elsif $cmpNo == 0
+        UI.messagebox("Number can't be zero")
+      else
+        break
+      end
+    end
     index = materials.index(results[0])
     $fntSinkMaterial = materials[index]
     cmp.set_attribute 'o.h', "Sink Material", $fntSinkMaterial        
 
   else
-    prompts = ["Workspacedepth", "Walkspacedepth", "Price", "Supplier",
-      "ID from Supplier", "Price from Supplier", "Position", "Number"]
-    values = [$cmpWorkdist, $cmpWalkdist, $cmpPrice, $cmpSuppl, $cmpSupplID,
-      $cmpSupplPrice, $cmPos, $cmpNo]
-    results = inputbox prompts, values, "Add Component Attributes"
-    return if not results
-    $cmpWorkdist = results[0]
-    $cmpWalkdist = results[1]
-    $cmpPrice = results[2]
-    $cmpSuppl = results[3]
-    $cmpSupplID = results[4]
-    $cmpSupplPrice = results[5]
-    $cmpPos = results[6]
-    $cmpNo = results[7]
+    while true
+      prompts = ["Workspacedepth", "Walkspacedepth", "Price", "Supplier",
+        "ID from Supplier", "Price from Supplier", "Position", "Number"]
+      values = [$cmpWorkdist, $cmpWalkdist, $cmpPrice, $cmpSuppl, $cmpSupplID,
+        $cmpSupplPrice, $cmPos, $cmpNo]
+      results = inputbox prompts, values, "Add Component Attributes"
+      return if not results
+      $cmpWorkdist = results[0]
+      $cmpWalkdist = results[1]
+      $cmpPrice = results[2]
+      $cmpSuppl = results[3]
+      $cmpSupplID = results[4]
+      $cmpSupplPrice = results[5]
+      $cmpPos = results[6]
+      $cmpNo = results[7]
+      if $cmpWorkdist.empty?
+        UI.messagebox("Workspacedepth can't be blank")
+      elsif $cmpWalkdist.empty?
+        UI.messagebox("Walkspacedepth can't be blank")
+      elsif $cmpPos == 0
+        UI.messagebox("Position can't be zero")
+      elsif $cmpNo == 0
+        UI.messagebox("Number can't be zero")
+      else
+        break
+      end
+    end
   end
 
   cmp.set_attribute 'o.h', "Workspacedepth", $cmpWorkdist
@@ -213,18 +274,18 @@ def set_cmp_att(cmp, type)
   cmp.set_attribute 'o.h', "Number", $cmpNo
 
   f = cmp.transformation.origin
-  check = cmp.get_attribute 'o.h', "viewNo"
+  check = cmp.get_attribute 'o.h', "Floor Number"
   if check == nil
     $xCmpOffset = f.x
     $yCmpOffset = f.y
     $zCmpOffset = f.z
   else
-    vxo = cmp.get_attribute 'o.h', "View x Offset"
-    vyo = cmp.get_attribute 'o.h', "View y Offset"
-    vzo = cmp.get_attribute 'o.h', "View z Offset"
-    $xCmpOffset = f.x - vxo
-    $yCmpOffset = f.y - vyo
-    $zCmpOffset = f.z - vzo
+    fxo = cmp.get_attribute 'o.h', "Floor x Offset"
+    fyo = cmp.get_attribute 'o.h', "Floor y Offset"
+    fzo = cmp.get_attribute 'o.h', "Floor z Offset"
+    $xCmpOffset = f.x - fxo
+    $yCmpOffset = f.y - fyo
+    $zCmpOffset = f.z - fzo
   end
   cmp.set_attribute 'o.h', "Component x Offset", $xCmpOffset
   cmp.set_attribute 'o.h', "Component y Offset", $yCmpOffset

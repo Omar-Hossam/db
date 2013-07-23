@@ -15,7 +15,7 @@ cmd = UI::Command.new("Digitales Bauen") {
     #   entities = model.active_entities
     #   entity = entities[0]
     #   status = selection.add selection
-    #   #model.selection.add
+    #   model.selection.add
     #   puts "onLButtonDown: flags = " + flags.to_s
     #   puts "                   x = " + x.to_s
     #   puts "                   y = " + y.to_s
@@ -165,11 +165,6 @@ cmd = UI::Command.new("Digitales Bauen") {
         UI.messagebox(message)
       end
     end
-
-    # def onMouseEnter(view)
-    #   puts "onMouseEnter: view = " + view.to_s
-    # end
-
   end
 
   DB_tool = DBTool.new
@@ -383,22 +378,17 @@ cmd = UI::Command.new("Digitales Bauen") {
         group = Sketchup.active_model.active_entities.add_group(ss)
         $xViewOffset = group.transformation.origin.x
         $yViewOffset = group.transformation.origin.y
-        $zViewOffset = group.transformation.origin.z
         gg = group.entities
         gg.each do |g|
           x = g.get_attribute 'o.h', "Component x Offset"
           $xCmpOffset = x - $xViewOffset
           y = g.get_attribute 'o.h', "Component y Offset"
           $yCmpOffset = y - $yViewOffset
-          z = g.get_attribute 'o.h', "Component z Offset"
-          $zCmpOffset = z - $zViewOffset
           g.set_attribute 'o.h', "Component x Offset", $xCmpOffset
           g.set_attribute 'o.h', "Component y Offset", $yCmpOffset
-          g.set_attribute 'o.h', "Component z Offset", $zCmpOffset
           g.set_attribute 'o.h', "View Number", $value
           g.set_attribute 'o.h', "View x Offset", $xViewOffset
           g.set_attribute 'o.h', "View y Offset", $yViewOffset
-          g.set_attribute 'o.h', "View z Offset", $zViewOffset
           g.set_attribute 'o.h', "Depth Offset", $depthOffset
           g.set_attribute 'o.h', "Height Offset", $heightOffset
         end
@@ -408,7 +398,6 @@ cmd = UI::Command.new("Digitales Bauen") {
         cmp.set_attribute 'o.h', "View Number", $value
         cmp.set_attribute 'o.h', "View x Offset", $xViewOffset
         cmp.set_attribute 'o.h', "View y Offset", $yViewOffset
-        cmp.set_attribute 'o.h', "View z Offset", $zViewOffset
         cmp.set_attribute 'o.h', "Depth Offset", $depthOffset
         cmp.set_attribute 'o.h', "Height Offset", $heightOffset
         UI.messagebox("View created")
@@ -458,32 +447,25 @@ cmd = UI::Command.new("Digitales Bauen") {
         group = Sketchup.active_model.active_entities.add_group(ss)
         $xRoomOffset = group.transformation.origin.x
         $yRoomOffset = group.transformation.origin.y
-        $zRoomOffset = group.transformation.origin.z
         gg = group.entities
         gg.each do |g|
           x = g.get_attribute 'o.h', "View x Offset"
           $xViewOffset = x - $xRoomOffset
           y = g.get_attribute 'o.h', "View y Offset"
           $yViewOffset = y - $yRoomOffset
-          z = g.get_attribute 'o.h', "View z Offset"
-          $zViewOffset = z - $zRoomOffset
           g.set_attribute 'o.h', "View x Offset", $xViewOffset
           g.set_attribute 'o.h', "View y Offset", $yViewOffset
-          g.set_attribute 'o.h', "View z Offset", $zViewOffset
           g.set_attribute 'o.h', "Room Number", $roomNo
           g.set_attribute 'o.h', "Room x Offset", $xRoomOffset
           g.set_attribute 'o.h', "Room y Offset", $yRoomOffset
-          g.set_attribute 'o.h', "Room z Offset", $zRoomOffset
           g.set_attribute 'o.h', "Room Name", $roomName
           g.set_attribute 'o.h', "Room Departement", $roomDept
           g.definition.entities.each do |c|
             c.set_attribute 'o.h', "View x Offset", $xViewOffset
             c.set_attribute 'o.h', "View y Offset", $yViewOffset
-            c.set_attribute 'o.h', "View z Offset", $zViewOffset
             c.set_attribute 'o.h', "Room Number", $roomNo
             c.set_attribute 'o.h', "Room x Offset", $xRoomOffset
             c.set_attribute 'o.h', "Room y Offset", $yRoomOffset
-            c.set_attribute 'o.h', "Room z Offset", $zRoomOffset
             c.set_attribute 'o.h', "Room Name", $roomName
             c.set_attribute 'o.h', "Room Departement", $roomDept
           end
@@ -494,7 +476,6 @@ cmd = UI::Command.new("Digitales Bauen") {
         cmp.set_attribute 'o.h', "Room Number", $roomNo
         cmp.set_attribute 'o.h', "Room x Offset", $xRoomOffset
         cmp.set_attribute 'o.h', "Room y Offset", $yRoomOffset
-        cmp.set_attribute 'o.h', "Room z Offset", $zRoomOffset
         cmp.set_attribute 'o.h', "Room Name", $roomName
         cmp.set_attribute 'o.h', "Room Departement", $roomDept
         UI.messagebox("Room created")
@@ -531,7 +512,7 @@ cmd = UI::Command.new("Digitales Bauen") {
       elsif bawazan == true
         UI.messagebox("Not all selected objects are from the View class. Please make sure when creating a room that all objects are Views")
       else
-        $floorNo = "001"
+        $floorNo = "000"
         prompts = ["Floor Number"]
         values = [$floorNo]
         results = inputbox prompts, values, "Make Floor"
@@ -547,11 +528,8 @@ cmd = UI::Command.new("Digitales Bauen") {
           $xRoomOffset = x - $xFloorOffset
           y = g.get_attribute 'o.h', "Room y Offset"
           $yRoomOffset = y - $yFloorOffset
-          z = g.get_attribute 'o.h', "Room z Offset"
-          $zRoomOffset = z - $zFloorOffset
           g.set_attribute 'o.h', "Room x Offset", $xRoomOffset
           g.set_attribute 'o.h', "Room y Offset", $yRoomOffset
-          g.set_attribute 'o.h', "Room z Offset", $zRoomOffset
           g.set_attribute 'o.h', "Floor Number", $floorNo
           g.set_attribute 'o.h', "Floor x Offset", $xFloorOffset
           g.set_attribute 'o.h', "Floor y Offset", $yFloorOffset
@@ -559,15 +537,16 @@ cmd = UI::Command.new("Digitales Bauen") {
           g.definition.entities.each do |c|
             c.set_attribute 'o.h', "Room x Offset", $xRoomOffset
             c.set_attribute 'o.h', "Room y Offset", $yRoomOffset
-            c.set_attribute 'o.h', "Room z Offset", $zRoomOffset
             c.set_attribute 'o.h', "Floor Number", $floorNo
             c.set_attribute 'o.h', "Floor x Offset", $xFloorOffset
             c.set_attribute 'o.h', "Floor y Offset", $yFloorOffset
             c.set_attribute 'o.h', "Floor z Offset", $zFloorOffset
             c.definition.entities.each do |f|
+              z = f.get_attribute 'o.h', "Component z Offset"
+              $zCmpOffset = z - $zFloorOffset
+              f.set_attribute 'o.h', "Component z Offset", $zCmpOffset
               f.set_attribute 'o.h', "Room x Offset", $xRoomOffset
               f.set_attribute 'o.h', "Room y Offset", $yRoomOffset
-              f.set_attribute 'o.h', "Room z Offset", $zRoomOffset
               f.set_attribute 'o.h', "Floor Number", $floorNo
               f.set_attribute 'o.h', "Floor x Offset", $xFloorOffset
               f.set_attribute 'o.h', "Floor y Offset", $yFloorOffset
@@ -617,11 +596,18 @@ cmd = UI::Command.new("Digitales Bauen") {
         UI.messagebox("Not all selected objects are from the View class. Please make sure when creating a room that all objects are Views")
       else
         $bldName = ""
-        prompts = ["Building Name"]
-        values = [$bldName]
-        results = inputbox prompts, values, "Make Building"
-        return if not results
-        $bldName = results[0]
+        while true
+          prompts = ["Building Name"]
+          values = [$bldName]
+          results = inputbox prompts, values, "Make Building"
+          return if not results
+          $bldName = results[0]
+          if $bldName.empty?
+            UI.messagebox("Building Name can't be blank")
+          else
+            break
+          end
+        end
         group = Sketchup.active_model.active_entities.add_group(ss)
         $xBldLocation = group.transformation.origin.x
         $yBldLocation = group.transformation.origin.y
