@@ -22,6 +22,24 @@ cmd = UI::Command.new("Digitales Bauen") {
     #   puts "                view = " + view.to_s
     # end
 
+    def get_words(name)
+      spn = name.split('')
+      if spn[4] == 'F'
+        if spn[5] == 'n'
+          index = 4
+        elsif spn[5] == 'l'
+          index = 1
+        end
+      elsif spn[4] == 'V'
+        index = 3
+      elsif spn[4] == 'R'
+        index = 2
+      elsif spn[4] == 'B'
+        index = 0
+      end
+      return index
+    end
+
     def getMenu(menu)
       menu.add_item("Edit attributes2") {
         s = Sketchup.active_model.selection
@@ -51,9 +69,130 @@ cmd = UI::Command.new("Digitales Bauen") {
             results = inputbox prompts, values, "Edit 2"
             return if not results
             index = 0
+            name = ss.definition.name
+            cats = [["Building x Location", "Building y Location",
+              "Building z Location"], ["Floor x Offset", "Floor y Offset",
+              "Floor z Offset"], ["Room x Offset", "Room y Offset",
+              "Floor z Offset"], ["View x Offset", "View y Offset",
+              "Floor z Offset"], ["Component x Offset", "Component y Offset",
+              "Component z Offset"]]
+            ind = get_words(name)
+            cat = cats[ind]
+            xpos = 0
+            ypos = 0
+            zpos = 0
             ks.each do |k|
+              if k == cat[0]
+                xpos = results[index]
+                xold = ss.get_attribute "o.h", k
+              elsif k == cat[1]
+                ypos = results[index]
+                yold = ss.get_attribute "o.h", k
+              elsif k == cat[2]
+                zpos = results[index]
+                zold = ss.get_attribute "o.h", k
+              end
               ss.set_attribute 'o.h', k, results[index]
               index = index + 1
+            end
+
+            pt = Geom::Point3d.new(xpos,ypos,zpos)
+            t = Geom::Transformation.new(pt)
+            ss.transformation= t
+            xdif = xpos - xold
+            ydif = ypos - yold
+            zdif = zpos - zold
+            if ind == 0
+              cat2 = cats[1]
+              xx = (ss.get_attribute 'o.h', cat2[0]) - xdif
+              yx = (ss.get_attribute 'o.h', cat2[1]) - ydif
+              zx = (ss.get_attribute 'o.h', cat2[2]) - zdif
+              ss.definition.entities.each do |f|
+                f.set_attribue 'o.h', cat[0], xpos
+                f.set_attribue 'o.h', cat[1], ypos
+                f.set_attribue 'o.h', cat[2], zpos
+                f.set_attribue 'o.h', cat2[0], xx
+                f.set_attribue 'o.h', cat2[1], yx
+                f.set_attribue 'o.h', cat2[2], zx
+                f.definition.entities.each do |r|
+                  r.set_attribue 'o.h', cat[0], xpos
+                  r.set_attribue 'o.h', cat[1], ypos
+                  r.set_attribue 'o.h', cat[2], zpos
+                  r.set_attribue 'o.h', cat2[0], xx
+                  r.set_attribue 'o.h', cat2[1], yx
+                  r.set_attribue 'o.h', cat2[2], zx
+                  r.definition.entities.each do |v|
+                    v.set_attribue 'o.h', cat[0], xpos
+                    v.set_attribue 'o.h', cat[1], ypos
+                    v.set_attribue 'o.h', cat[2], zpos
+                    v.set_attribue 'o.h', cat2[0], xx
+                    v.set_attribue 'o.h', cat2[1], yx
+                    v.set_attribue 'o.h', cat2[2], zx
+                    v.definition.entities.each do |c|
+                      c.set_attribue 'o.h', cat[0], xpos
+                      c.set_attribue 'o.h', cat[1], ypos
+                      c.set_attribue 'o.h', cat[2], zpos
+                      c.set_attribue 'o.h', cat2[0], xx
+                      c.set_attribue 'o.h', cat2[1], yx
+                      c.set_attribue 'o.h', cat2[2], zx
+                    end
+                  end
+                end
+              end  
+            elsif ind == 1
+              cat2 = cats[2]
+              cat3 = cats[4]
+              xx = (ss.get_attribute 'o.h', cat2[0]) - xdif
+              yx = (ss.get_attribute 'o.h', cat2[1]) - ydif
+              zx = (ss.get_attribute 'o.h', cat3[2]) - zdif
+              ss.definition.entities.each do |r|
+                r.set_attribue 'o.h', cat[0], xpos
+                r.set_attribue 'o.h', cat[1], ypos
+                r.set_attribue 'o.h', cat[2], zpos
+                r.set_attribue 'o.h', cat2[0], xx
+                r.set_attribue 'o.h', cat2[1], yx
+                r.definition.entities.each do |v|
+                  v.set_attribue 'o.h', cat[0], xpos
+                  v.set_attribue 'o.h', cat[1], ypos
+                  v.set_attribue 'o.h', cat[2], zpos
+                  v.set_attribue 'o.h', cat2[0], xx
+                  v.set_attribue 'o.h', cat2[1], yx
+                  v.definition.entities.each do |c|
+                    c.set_attribue 'o.h', cat[0], xpos
+                    c.set_attribue 'o.h', cat[1], ypos
+                    c.set_attribue 'o.h', cat[2], zpos
+                    c.set_attribue 'o.h', cat2[0], xx
+                    c.set_attribue 'o.h', cat2[1], yx
+                    c.set_attribue 'o.h', cat3[2], zx
+                  end
+                end
+              end
+            elsif ind == 2
+              cat2 = cats[3]
+              xx = (ss.get_attribute 'o.h', cat2[0]) - xdif
+              yx = (ss.get_attribute 'o.h', cat2[1]) - ydif
+              ss.definition.entities.each do |v|
+                v.set_attribue 'o.h', cat[0], xpos
+                v.set_attribue 'o.h', cat[1], ypos
+                v.set_attribue 'o.h', cat2[0], xx
+                v.set_attribue 'o.h', cat2[1], yx
+                v.definition.entities.each do |c|
+                  c.set_attribue 'o.h', cat[0], xpos
+                  c.set_attribue 'o.h', cat[1], ypos
+                  c.set_attribue 'o.h', cat2[0], xx
+                  c.set_attribue 'o.h', cat2[1], yx
+                end
+              end
+            elsif ind == 3
+              cat2 = cats[4]
+              xx = (ss.get_attribute 'o.h', cat2[0]) - xdif
+              yx = (ss.get_attribute 'o.h', cat2[1]) - ydif
+              ss.definition.entities.each do |c|
+                c.set_attribue 'o.h', cat[0], xpos
+                c.set_attribue 'o.h', cat[1], ypos
+                c.set_attribue 'o.h', cat2[0], xx
+                c.set_attribue 'o.h', cat2[1], yx
+              end
             end
             UI.messagebox("Attributes edits applied")
           end
@@ -63,11 +202,6 @@ cmd = UI::Command.new("Digitales Bauen") {
             pt = Geom::Point3d.new($XPos,$YPos,$ZPos)
             t = Geom::Transformation.new(pt)
             e.transformation= t
-      }
-      menu.add_item("Zoom to slection"){
-        selection = Sketchup.active_model.selection
-        view = Sketchup.active_model.active_view
-        view = view.zoom selection
       }
       scenes_menu = menu.add_submenu("change view")
       scenes_menu.add_item("Top view") {
