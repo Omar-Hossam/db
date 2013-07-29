@@ -271,7 +271,7 @@ class AttrReporter
       ensure
         file.close
       end        
-    elsif path.nil == false
+    elsif not path.nil?
       UI.messagebox "You Have changed the filetype in the save dialog, please try again."      
     end
     Sketchup.active_model.commit_operation

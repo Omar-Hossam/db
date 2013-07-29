@@ -9,19 +9,6 @@ cmd = UI::Command.new("Digitales Bauen") {
       puts "Your tool has been activated."
     end
 
-    # def onLButtonDown(flags, x, y, view)
-    #   model = Sketchup.active_model
-    #   selection = model.selection
-    #   entities = model.active_entities
-    #   entity = entities[0]
-    #   status = selection.add selection
-    #   model.selection.add
-    #   puts "onLButtonDown: flags = " + flags.to_s
-    #   puts "                   x = " + x.to_s
-    #   puts "                   y = " + y.to_s
-    #   puts "                view = " + view.to_s
-    # end
-
     def get_words(name)
       spn = name.split('')
       if spn[4] == 'F'
@@ -41,7 +28,7 @@ cmd = UI::Command.new("Digitales Bauen") {
     end
 
     def getMenu(menu)
-      menu.add_item("Edit attributes2") {
+      menu.add_item("Edit attributes") {
         s = Sketchup.active_model.selection
         ss = s.first
         if s.empty?
@@ -81,6 +68,9 @@ cmd = UI::Command.new("Digitales Bauen") {
             xpos = 0
             ypos = 0
             zpos = 0
+            xold = 0
+            yold = 0
+            zold = 0
             ks.each do |k|
               if k == cat[0]
                 xpos = results[index]
@@ -95,46 +85,45 @@ cmd = UI::Command.new("Digitales Bauen") {
               ss.set_attribute 'o.h', k, results[index]
               index = index + 1
             end
-
-            pt = Geom::Point3d.new(xpos,ypos,zpos)
-            t = Geom::Transformation.new(pt)
-            ss.transformation= t
+            xdif = 0.0
+            ydif = 0.0
+            zdif = 0.0
             xdif = xpos - xold
             ydif = ypos - yold
             zdif = zpos - zold
             if ind == 0
               cat2 = cats[1]
-              xx = (ss.get_attribute 'o.h', cat2[0]) - xdif
-              yx = (ss.get_attribute 'o.h', cat2[1]) - ydif
-              zx = (ss.get_attribute 'o.h', cat2[2]) - zdif
               ss.definition.entities.each do |f|
-                f.set_attribue 'o.h', cat[0], xpos
-                f.set_attribue 'o.h', cat[1], ypos
-                f.set_attribue 'o.h', cat[2], zpos
-                f.set_attribue 'o.h', cat2[0], xx
-                f.set_attribue 'o.h', cat2[1], yx
-                f.set_attribue 'o.h', cat2[2], zx
+                xx = (f.get_attribute 'o.h', cat2[0]) - xdif
+                yx = (f.get_attribute 'o.h', cat2[1]) - ydif
+                zx = (f.get_attribute 'o.h', cat2[2]) - zdif
+                f.set_attribute 'o.h', cat[0], xpos
+                f.set_attribute 'o.h', cat[1], ypos
+                f.set_attribute 'o.h', cat[2], zpos
+                f.set_attribute 'o.h', cat2[0], xx
+                f.set_attribute 'o.h', cat2[1], yx
+                f.set_attribute 'o.h', cat2[2], zx
                 f.definition.entities.each do |r|
-                  r.set_attribue 'o.h', cat[0], xpos
-                  r.set_attribue 'o.h', cat[1], ypos
-                  r.set_attribue 'o.h', cat[2], zpos
-                  r.set_attribue 'o.h', cat2[0], xx
-                  r.set_attribue 'o.h', cat2[1], yx
-                  r.set_attribue 'o.h', cat2[2], zx
+                  r.set_attribute 'o.h', cat[0], xpos
+                  r.set_attribute 'o.h', cat[1], ypos
+                  r.set_attribute 'o.h', cat[2], zpos
+                  r.set_attribute 'o.h', cat2[0], xx
+                  r.set_attribute 'o.h', cat2[1], yx
+                  r.set_attribute 'o.h', cat2[2], zx
                   r.definition.entities.each do |v|
-                    v.set_attribue 'o.h', cat[0], xpos
-                    v.set_attribue 'o.h', cat[1], ypos
-                    v.set_attribue 'o.h', cat[2], zpos
-                    v.set_attribue 'o.h', cat2[0], xx
-                    v.set_attribue 'o.h', cat2[1], yx
-                    v.set_attribue 'o.h', cat2[2], zx
+                    v.set_attribute 'o.h', cat[0], xpos
+                    v.set_attribute 'o.h', cat[1], ypos
+                    v.set_attribute 'o.h', cat[2], zpos
+                    v.set_attribute 'o.h', cat2[0], xx
+                    v.set_attribute 'o.h', cat2[1], yx
+                    v.set_attribute 'o.h', cat2[2], zx
                     v.definition.entities.each do |c|
-                      c.set_attribue 'o.h', cat[0], xpos
-                      c.set_attribue 'o.h', cat[1], ypos
-                      c.set_attribue 'o.h', cat[2], zpos
-                      c.set_attribue 'o.h', cat2[0], xx
-                      c.set_attribue 'o.h', cat2[1], yx
-                      c.set_attribue 'o.h', cat2[2], zx
+                      c.set_attribute 'o.h', cat[0], xpos
+                      c.set_attribute 'o.h', cat[1], ypos
+                      c.set_attribute 'o.h', cat[2], zpos
+                      c.set_attribute 'o.h', cat2[0], xx
+                      c.set_attribute 'o.h', cat2[1], yx
+                      c.set_attribute 'o.h', cat2[2], zx
                     end
                   end
                 end
@@ -142,66 +131,69 @@ cmd = UI::Command.new("Digitales Bauen") {
             elsif ind == 1
               cat2 = cats[2]
               cat3 = cats[4]
-              xx = (ss.get_attribute 'o.h', cat2[0]) - xdif
-              yx = (ss.get_attribute 'o.h', cat2[1]) - ydif
-              zx = (ss.get_attribute 'o.h', cat3[2]) - zdif
               ss.definition.entities.each do |r|
-                r.set_attribue 'o.h', cat[0], xpos
-                r.set_attribue 'o.h', cat[1], ypos
-                r.set_attribue 'o.h', cat[2], zpos
-                r.set_attribue 'o.h', cat2[0], xx
-                r.set_attribue 'o.h', cat2[1], yx
+                xx = (r.get_attribute 'o.h', cat2[0]) - xdif
+                yx = (r.get_attribute 'o.h', cat2[1]) - ydif
+                r.set_attribute 'o.h', cat[0], xpos
+                r.set_attribute 'o.h', cat[1], ypos
+                r.set_attribute 'o.h', cat[2], zpos
+                r.set_attribute 'o.h', cat2[0], xx
+                r.set_attribute 'o.h', cat2[1], yx
                 r.definition.entities.each do |v|
-                  v.set_attribue 'o.h', cat[0], xpos
-                  v.set_attribue 'o.h', cat[1], ypos
-                  v.set_attribue 'o.h', cat[2], zpos
-                  v.set_attribue 'o.h', cat2[0], xx
-                  v.set_attribue 'o.h', cat2[1], yx
+                  v.set_attribute 'o.h', cat[0], xpos
+                  v.set_attribute 'o.h', cat[1], ypos
+                  v.set_attribute 'o.h', cat[2], zpos
+                  v.set_attribute 'o.h', cat2[0], xx
+                  v.set_attribute 'o.h', cat2[1], yx
                   v.definition.entities.each do |c|
-                    c.set_attribue 'o.h', cat[0], xpos
-                    c.set_attribue 'o.h', cat[1], ypos
-                    c.set_attribue 'o.h', cat[2], zpos
-                    c.set_attribue 'o.h', cat2[0], xx
-                    c.set_attribue 'o.h', cat2[1], yx
-                    c.set_attribue 'o.h', cat3[2], zx
+                    zx = (c.get_attribute 'o.h', cat3[2]) - zdif
+                    c.set_attribute 'o.h', cat[0], xpos
+                    c.set_attribute 'o.h', cat[1], ypos
+                    c.set_attribute 'o.h', cat[2], zpos
+                    c.set_attribute 'o.h', cat2[0], xx
+                    c.set_attribute 'o.h', cat2[1], yx
+                    c.set_attribute 'o.h', cat3[2], zx
                   end
                 end
               end
             elsif ind == 2
               cat2 = cats[3]
-              xx = (ss.get_attribute 'o.h', cat2[0]) - xdif
-              yx = (ss.get_attribute 'o.h', cat2[1]) - ydif
               ss.definition.entities.each do |v|
-                v.set_attribue 'o.h', cat[0], xpos
-                v.set_attribue 'o.h', cat[1], ypos
-                v.set_attribue 'o.h', cat2[0], xx
-                v.set_attribue 'o.h', cat2[1], yx
+                xx = (v.get_attribute 'o.h', cat2[0]) - xdif
+                yx = (v.get_attribute 'o.h', cat2[1]) - ydif
+                v.set_attribute 'o.h', cat[0], xpos
+                v.set_attribute 'o.h', cat[1], ypos
+                v.set_attribute 'o.h', cat2[0], xx
+                v.set_attribute 'o.h', cat2[1], yx
                 v.definition.entities.each do |c|
-                  c.set_attribue 'o.h', cat[0], xpos
-                  c.set_attribue 'o.h', cat[1], ypos
-                  c.set_attribue 'o.h', cat2[0], xx
-                  c.set_attribue 'o.h', cat2[1], yx
+                  c.set_attribute 'o.h', cat[0], xpos
+                  c.set_attribute 'o.h', cat[1], ypos
+                  c.set_attribute 'o.h', cat2[0], xx
+                  c.set_attribute 'o.h', cat2[1], yx
                 end
               end
             elsif ind == 3
               cat2 = cats[4]
-              xx = (ss.get_attribute 'o.h', cat2[0]) - xdif
-              yx = (ss.get_attribute 'o.h', cat2[1]) - ydif
               ss.definition.entities.each do |c|
-                c.set_attribue 'o.h', cat[0], xpos
-                c.set_attribue 'o.h', cat[1], ypos
-                c.set_attribue 'o.h', cat2[0], xx
-                c.set_attribue 'o.h', cat2[1], yx
+                xx = (c.get_attribute 'o.h', cat2[0]) - xdif
+                yx = (c.get_attribute 'o.h', cat2[1]) - ydif
+                c.set_attribute 'o.h', cat[0], xpos
+                c.set_attribute 'o.h', cat[1], ypos
+                c.set_attribute 'o.h', cat2[0], xx
+                c.set_attribute 'o.h', cat2[1], yx
               end
             end
+            pt = Geom::Point3d.new(xpos,ypos,zpos)
+            t = Geom::Transformation.new(pt)
+            ss.transformation= t
             UI.messagebox("Attributes edits applied")
           end
         end
       }
-      menu.add_item("Edit attributes") {
-            pt = Geom::Point3d.new($XPos,$YPos,$ZPos)
-            t = Geom::Transformation.new(pt)
-            e.transformation= t
+      menu.add_item("Zoom to slection"){
+        selection = Sketchup.active_model.selection
+        view = Sketchup.active_model.active_view
+        view = view.zoom selection
       }
       scenes_menu = menu.add_submenu("change view")
       scenes_menu.add_item("Top view") {
