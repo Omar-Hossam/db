@@ -310,8 +310,623 @@ def set_cmp_att(cmp, type)
 
 end
 
+def get_index(ent)
+  cls, typ = get_type(ent.definition.name)
+  tps = ["building", "floor", "room", "view", "component"]
+  ind = tps.index(cls)
+  if cls.nil?
+    return nil
+  else
+    return ind
+  end
+end
+
+# {
+# "employees": [
+# { "firstName":"John" , "lastName":"Doe" }, 
+# { "firstName":"Anna" , "lastName":"Smith" }, 
+# { "firstName":"Peter" , "lastName":"Jones" }
+# ]
+# }
+
+def to_json
+  ents = Sketchup.active_model.entities
+  json_string = "{   "
+  katab = false
+  first = true
+  ents.each do |ent|
+    if (get_index(ent) == 0) && (not get_index(ent).nil?)
+      if katab == false
+        json_string << "\"buildings\" : [ "
+        katab = true
+      end
+      if first
+        json_string << "{ "
+        first = false
+      else
+        json_string << ", { "
+      end
+      at = ent.attribute_dictionary "o.h"
+      ks = at.keys
+      num = 0
+      ks.each do |k|
+        val = ent.get_attribute "o.h", k
+        if num == 0
+          num = num + 1
+          json_string << "\"" + k.to_s + "\" : " 
+          if (val.is_a? Integer) || (val.is_a? Float)
+            json_string << val.to_s
+          else
+            json_string << "\"" + val.to_s + "\""
+          end
+        else
+          json_string << " , \"" + k.to_s + "\" : " 
+          if (val.is_a? Integer) || (val.is_a? Float)
+            json_string << val.to_s
+          else
+            json_string << "\"" + val.to_s + "\""
+          end
+        end
+      end
+      json_string << " } "
+    end
+  end
+  json_string << "] "
+  katab = false
+  first = true
+  ents.each do |ent|
+    if (get_index(ent) == 1) && (not get_index(ent).nil?)
+      if katab == false
+        json_string << " , \"floors\" : [ "
+        katab = true
+      end
+      if first
+        json_string << "{ "
+        first = false
+      else
+        json_string << ", { "
+      end
+      at = ent.attribute_dictionary "o.h"
+      ks = at.keys
+      num = 0
+      ks.each do |k|
+        val = ent.get_attribute "o.h", k
+        if num == 0
+          num = num + 1
+          json_string << "\"" + k.to_s + "\" : " 
+          if (val.is_a? Integer) || (val.is_a? Float)
+            json_string << val.to_s
+          else
+            json_string << "\"" + val.to_s + "\""
+          end
+        else
+          json_string << " , \"" + k.to_s + "\" : " 
+          if (val.is_a? Integer) || (val.is_a? Float)
+            json_string << val.to_s
+          else
+            json_string << "\"" + val.to_s + "\""
+          end
+        end
+      end
+      json_string << " } "
+    elsif (get_index(ent) == 0) && (not get_index(ent).nil?)
+      ent.definition.entities.each do |enx|
+        if katab == false
+          json_string << " , \"floors\" : [ "
+          katab = true
+        end
+        if first
+          json_string << "{ "
+          first = false
+        else
+          json_string << ", { "
+        end
+        at = enx.attribute_dictionary "o.h"
+        ks = at.keys
+        num = 0
+        ks.each do |k|
+          val = enx.get_attribute "o.h", k
+          if num == 0
+            num = num + 1
+            json_string << "\"" + k.to_s + "\" : " 
+            if (val.is_a? Integer) || (val.is_a? Float)
+              json_string << val.to_s
+            else
+              json_string << "\"" + val.to_s + "\""
+            end
+          else
+            json_string << " , \"" + k.to_s + "\" : " 
+            if (val.is_a? Integer) || (val.is_a? Float)
+              json_string << val.to_s
+            else
+              json_string << "\"" + val.to_s + "\""
+            end
+          end
+        end
+        json_string << " } "
+      end
+    end
+  end
+  json_string << "] "
+  katab = false
+  first = true
+
+  ents.each do |ent|
+    if (get_index(ent) == 2) && (not get_index(ent).nil?)
+      if katab == false
+        json_string << " , \"rooms\" : [ "
+        katab = true
+      end
+      if first
+        json_string << "{ "
+        first = false
+      else
+        json_string << ", { "
+      end
+      at = ent.attribute_dictionary "o.h"
+      ks = at.keys
+      num = 0
+      ks.each do |k|
+        val = ent.get_attribute "o.h", k
+        if num == 0
+          num = num + 1
+          json_string << "\"" + k.to_s + "\" : " 
+          if (val.is_a? Integer) || (val.is_a? Float)
+            json_string << val.to_s
+          else
+            json_string << "\"" + val.to_s + "\""
+          end
+        else
+          json_string << " , \"" + k.to_s + "\" : " 
+          if (val.is_a? Integer) || (val.is_a? Float)
+            json_string << val.to_s
+          else
+            json_string << "\"" + val.to_s + "\""
+          end
+        end
+      end
+      json_string << " } "
+    elsif (get_index(ent) == 1) && (not get_index(ent).nil?)
+      ent.definition.entities.each do |enx|
+        if katab == false
+          json_string << " , \"rooms\" : [ "
+          katab = true
+        end
+        if first
+          json_string << "{ "
+          first = false
+        else
+          json_string << ", { "
+        end
+        at = enx.attribute_dictionary "o.h"
+        ks = at.keys
+        num = 0
+        ks.each do |k|
+          val = enx.get_attribute "o.h", k
+          if num == 0
+            num = num + 1
+            json_string << "\"" + k.to_s + "\" : " 
+            if (val.is_a? Integer) || (val.is_a? Float)
+              json_string << val.to_s
+            else
+              json_string << "\"" + val.to_s + "\""
+            end
+          else
+            json_string << " , \"" + k.to_s + "\" : " 
+            if (val.is_a? Integer) || (val.is_a? Float)
+              json_string << val.to_s
+            else
+              json_string << "\"" + val.to_s + "\""
+            end
+          end
+        end
+        json_string << " } "
+      end
+    elsif (get_index(ent) == 0) && (not get_index(ent).nil?)
+      ent.definition.entities.each do |enx|
+        enx.definition.entities.each do |enw|
+          if katab == false
+            json_string << " , \"rooms\" : [ "
+            katab = true
+          end
+          if first
+            json_string << "{ "
+            first = false
+          else
+            json_string << ", { "
+          end
+          at = enw.attribute_dictionary "o.h"
+          ks = at.keys
+          num = 0
+          ks.each do |k|
+            val = enw.get_attribute "o.h", k
+            if num == 0
+              num = num + 1
+              json_string << "\"" + k.to_s + "\" : " 
+              if (val.is_a? Integer) || (val.is_a? Float)
+                json_string << val.to_s
+              else
+                json_string << "\"" + val.to_s + "\""
+              end
+            else
+              json_string << " , \"" + k.to_s + "\" : " 
+              if (val.is_a? Integer) || (val.is_a? Float)
+                json_string << val.to_s
+              else
+                json_string << "\"" + val.to_s + "\""
+              end
+            end
+          end
+          json_string << " } "
+        end
+      end
+    end
+  end
+  json_string << "] "
+  katab = false
+  first = true
+
+  ents.each do |ent|
+    if (get_index(ent) == 3) && (not get_index(ent).nil?)
+      if katab == false
+        json_string << " , \"views\" : [ "
+        katab = true
+      end
+      if first
+        json_string << "{ "
+        first = false
+      else
+        json_string << ", { "
+      end
+      at = ent.attribute_dictionary "o.h"
+      ks = at.keys
+      num = 0
+      ks.each do |k|
+        val = ent.get_attribute "o.h", k
+        if num == 0
+          num = num + 1
+          json_string << "\"" + k.to_s + "\" : " 
+          if (val.is_a? Integer) || (val.is_a? Float)
+            json_string << val.to_s
+          else
+            json_string << "\"" + val.to_s + "\""
+          end
+        else
+          json_string << " , \"" + k.to_s + "\" : " 
+          if (val.is_a? Integer) || (val.is_a? Float)
+            json_string << val.to_s
+          else
+            json_string << "\"" + val.to_s + "\""
+          end
+        end
+      end
+      json_string << " } "
+    elsif (get_index(ent) == 2) && (not get_index(ent).nil?)
+      ent.definition.entities.each do |enx|
+        if katab == false
+          json_string << " , \"views\" : [ "
+          katab = true
+        end
+        if first
+          json_string << "{ "
+          first = false
+        else
+          json_string << ", { "
+        end
+        at = enx.attribute_dictionary "o.h"
+        ks = at.keys
+        num = 0
+        ks.each do |k|
+          val = enx.get_attribute "o.h", k
+          if num == 0
+            num = num + 1
+            json_string << "\"" + k.to_s + "\" : " 
+            if (val.is_a? Integer) || (val.is_a? Float)
+              json_string << val.to_s
+            else
+              json_string << "\"" + val.to_s + "\""
+            end
+          else
+            json_string << " , \"" + k.to_s + "\" : " 
+            if (val.is_a? Integer) || (val.is_a? Float)
+              json_string << val.to_s
+            else
+              json_string << "\"" + val.to_s + "\""
+            end
+          end
+        end
+        json_string << " } "
+      end
+    elsif (get_index(ent) == 1) && (not get_index(ent).nil?)
+      ent.definition.entities.each do |enx|
+        enx.definition.entities.each do |enw|
+          if katab == false
+            json_string << " , \"views\" : [ "
+            katab = true
+          end
+          if first
+            json_string << "{ "
+            first = false
+          else
+            json_string << ", { "
+          end
+          at = enw.attribute_dictionary "o.h"
+          ks = at.keys
+          num = 0
+          ks.each do |k|
+            val = enw.get_attribute "o.h", k
+            if num == 0
+              num = num + 1
+              json_string << "\"" + k.to_s + "\" : " 
+              if (val.is_a? Integer) || (val.is_a? Float)
+                json_string << val.to_s
+              else
+                json_string << "\"" + val.to_s + "\""
+              end
+            else
+              json_string << " , \"" + k.to_s + "\" : " 
+              if (val.is_a? Integer) || (val.is_a? Float)
+                json_string << val.to_s
+              else
+                json_string << "\"" + val.to_s + "\""
+              end
+            end
+          end
+          json_string << " } "
+        end
+      end
+    elsif (get_index(ent) == 0) && (not get_index(ent).nil?)
+      ent.definition.entities.each do |enx|
+        enx.definition.entities.each do |enw|
+          enw.definition.entities.each do |enh|
+            if katab == false
+              json_string << " , \"views\" : [ "
+              katab = true
+            end
+            if first
+              json_string << "{ "
+              first = false
+            else
+              json_string << ", { "
+            end
+            at = enh.attribute_dictionary "o.h"
+            ks = at.keys
+            num = 0
+            ks.each do |k|
+              val = enh.get_attribute "o.h", k
+              if num == 0
+                num = num + 1
+                json_string << "\"" + k.to_s + "\" : " 
+                if (val.is_a? Integer) || (val.is_a? Float)
+                  json_string << val.to_s
+                else
+                  json_string << "\"" + val.to_s + "\""
+                end
+              else
+                json_string << " , \"" + k.to_s + "\" : " 
+                if (val.is_a? Integer) || (val.is_a? Float)
+                  json_string << val.to_s
+                else
+                  json_string << "\"" + val.to_s + "\""
+                end
+              end
+            end
+            json_string << " } "
+          end
+        end
+      end
+    end
+  end
+  json_string << "] "
+  katab = false
+  first = true
+
+  ents.each do |ent|
+    if (get_index(ent) == 4) && (not get_index(ent).nil?)
+      if katab == false
+        json_string << " , \"components\" : [ "
+        katab = true
+      end
+      if first
+        json_string << "{ "
+        first = false
+      else
+        json_string << ", { "
+      end
+      at = ent.attribute_dictionary "o.h"
+      ks = at.keys
+      num = 0
+      ks.each do |k|
+        val = ent.get_attribute "o.h", k
+        if num == 0
+          num = num + 1
+          json_string << "\"" + k.to_s + "\" : " 
+          if (val.is_a? Integer) || (val.is_a? Float)
+            json_string << val.to_s
+          else
+            json_string << "\"" + val.to_s + "\""
+          end
+        else
+          json_string << " , \"" + k.to_s + "\" : " 
+          if (val.is_a? Integer) || (val.is_a? Float)
+            json_string << val.to_s
+          else
+            json_string << "\"" + val.to_s + "\""
+          end
+        end
+      end
+      json_string << " } "
+    elsif (get_index(ent) == 3) && (not get_index(ent).nil?)
+      ent.definition.entities.each do |enx|
+        if katab == false
+          json_string << " , \"components\" : [ "
+          katab = true
+        end
+        if first
+          json_string << "{ "
+          first = false
+        else
+          json_string << ", { "
+        end
+        at = enx.attribute_dictionary "o.h"
+        ks = at.keys
+        num = 0
+        ks.each do |k|
+          val = enx.get_attribute "o.h", k
+          if num == 0
+            num = num + 1
+            json_string << "\"" + k.to_s + "\" : " 
+            if (val.is_a? Integer) || (val.is_a? Float)
+              json_string << val.to_s
+            else
+              json_string << "\"" + val.to_s + "\""
+            end
+          else
+            json_string << " , \"" + k.to_s + "\" : " 
+            if (val.is_a? Integer) || (val.is_a? Float)
+              json_string << val.to_s
+            else
+              json_string << "\"" + val.to_s + "\""
+            end
+          end
+        end
+        json_string << " } "
+      end
+    elsif (get_index(ent) == 2) && (not get_index(ent).nil?)
+      ent.definition.entities.each do |enx|
+        enx.definition.entities.each do |enw|
+          if katab == false
+            json_string << " , \"components\" : [ "
+            katab = true
+          end
+          if first
+            json_string << "{ "
+            first = false
+          else
+            json_string << ", { "
+          end
+          at = enw.attribute_dictionary "o.h"
+          ks = at.keys
+          num = 0
+          ks.each do |k|
+            val = enw.get_attribute "o.h", k
+            if num == 0
+              num = num + 1
+              json_string << "\"" + k.to_s + "\" : " 
+              if (val.is_a? Integer) || (val.is_a? Float)
+                json_string << val.to_s
+              else
+                json_string << "\"" + val.to_s + "\""
+              end
+            else
+              json_string << " , \"" + k.to_s + "\" : " 
+              if (val.is_a? Integer) || (val.is_a? Float)
+                json_string << val.to_s
+              else
+                json_string << "\"" + val.to_s + "\""
+              end
+            end
+          end
+          json_string << " } "
+        end
+      end
+    elsif (get_index(ent) == 1) && (not get_index(ent).nil?)
+      ent.definition.entities.each do |enx|
+        enx.definition.entities.each do |enw|
+          enw.definition.entities.each do |enh|
+            if katab == false
+              json_string << " , \"components\" : [ "
+              katab = true
+            end
+            if first
+              json_string << "{ "
+              first = false
+            else
+              json_string << ", { "
+            end
+            at = enh.attribute_dictionary "o.h"
+            ks = at.keys
+            num = 0
+            ks.each do |k|
+              val = enh.get_attribute "o.h", k
+              if num == 0
+                num = num + 1
+                json_string << "\"" + k.to_s + "\" : " 
+                if (val.is_a? Integer) || (val.is_a? Float)
+                  json_string << val.to_s
+                else
+                  json_string << "\"" + val.to_s + "\""
+                end
+              else
+                json_string << " , \"" + k.to_s + "\" : " 
+                if (val.is_a? Integer) || (val.is_a? Float)
+                  json_string << val.to_s
+                else
+                  json_string << "\"" + val.to_s + "\""
+                end
+              end
+            end
+            json_string << " } "
+          end
+        end
+      end
+    elsif (get_index(ent) == 0) && (not get_index(ent).nil?)
+      ent.definition.entities.each do |enx|
+        enx.definition.entities.each do |enw|
+          enw.definition.entities.each do |enh|
+            enh.definition.entities.each do |enf|
+              if katab == false
+                json_string << " , \"components\" : [ "
+                katab = true
+              end
+              if first
+                json_string << "{ "
+                first = false
+              else
+                json_string << ", { "
+              end
+              at = enf.attribute_dictionary "o.h"
+              ks = at.keys
+              num = 0
+              ks.each do |k|
+                val = enf.get_attribute "o.h", k
+                if num == 0
+                  num = num + 1
+                  json_string << "\"" + k.to_s + "\" : " 
+                  if (val.is_a? Integer) || (val.is_a? Float)
+                    json_string << val.to_s
+                  else
+                    json_string << "\"" + val.to_s + "\""
+                  end
+                else
+                  json_string << " , \"" + k.to_s + "\" : " 
+                  if (val.is_a? Integer) || (val.is_a? Float)
+                    json_string << val.to_s
+                  else
+                    json_string << "\"" + val.to_s + "\""
+                  end
+                end
+              end
+              json_string << " } "
+            end
+          end
+        end
+      end
+    end
+  end
+  json_string << "] "
+  katab = false
+  first = true
+
+  json_string << "   }"
+  File.open("C:/Users/Omar H/Desktop/out.json", "a") do |f|     
+    f.write(json_string)   
+  end
+end
+
 if( not file_loaded?("su_examples/addAtt.rb") )
   plugs_menu = UI.menu("Plugins")
   plugs_menu.add_item("Add attributes") { add_attributes }
+  plugs_menu.add_item("json") { to_json }
 end
 file_loaded("su_examples/addAtt.rb")
