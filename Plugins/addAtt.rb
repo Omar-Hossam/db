@@ -280,16 +280,16 @@ def set_cmp_att(cmp, type)
   f = cmp.transformation.origin
   check = cmp.get_attribute 'o.h', "Floor Number"
   if check == nil
-    $xCmpOffset = f.x
-    $yCmpOffset = f.y
-    $zCmpOffset = f.z
+    $xCmpOffset = f.x.to_f
+    $yCmpOffset = f.y.to_f
+    $zCmpOffset = f.z.to_f
   else
     fxo = cmp.get_attribute 'o.h', "Floor x Offset"
     fyo = cmp.get_attribute 'o.h', "Floor y Offset"
     fzo = cmp.get_attribute 'o.h', "Floor z Offset"
-    $xCmpOffset = f.x - fxo
-    $yCmpOffset = f.y - fyo
-    $zCmpOffset = f.z - fzo
+    $xCmpOffset = f.x.to_f - fxo
+    $yCmpOffset = f.y.to_f - fyo
+    $zCmpOffset = f.z.to_f - fzo
   end
   cmp.set_attribute 'o.h', "Component x Offset", $xCmpOffset
   cmp.set_attribute 'o.h', "Component y Offset", $yCmpOffset
@@ -298,9 +298,9 @@ def set_cmp_att(cmp, type)
   $cmpName = cmp.definition.name
   cmp.set_attribute 'o.h', "Component Name", $cmpName
   cmp.set_attribute 'o.h', "Component Type", type
-  $cmpWidth = cmp.bounds.width
-  $cmpDepth = cmp.bounds.depth
-  $cmpHeight = cmp.bounds.height
+  $cmpWidth = cmp.bounds.width.to_f
+  $cmpDepth = cmp.bounds.depth.to_f
+  $cmpHeight = cmp.bounds.height.to_f
   cmp.set_attribute 'o.h', "Width", $cmpWidth
   cmp.set_attribute 'o.h', "Depth", $cmpDepth
   cmp.set_attribute 'o.h', "Height", $cmpHeight
@@ -321,23 +321,17 @@ def get_index(ent)
   end
 end
 
-# {
-# "employees": [
-# { "firstName":"John" , "lastName":"Doe" }, 
-# { "firstName":"Anna" , "lastName":"Smith" }, 
-# { "firstName":"Peter" , "lastName":"Jones" }
-# ]
-# }
-
 def to_json
   ents = Sketchup.active_model.entities
   json_string = "{   "
   katab = false
   first = true
+  awel = true
   ents.each do |ent|
     if (get_index(ent) == 0) && (not get_index(ent).nil?)
       if katab == false
         json_string << "\"buildings\" : [ "
+        awel = false
         katab = true
       end
       if first
@@ -371,13 +365,21 @@ def to_json
       json_string << " } "
     end
   end
-  json_string << "] "
+  if katab
+    json_string << "] "
+  end
+
   katab = false
   first = true
   ents.each do |ent|
     if (get_index(ent) == 1) && (not get_index(ent).nil?)
       if katab == false
-        json_string << " , \"floors\" : [ "
+        if awel
+          json_string << "\"floors\" : [ "
+          awel = false
+        else
+          json_string << " , \"floors\" : [ "
+        end
         katab = true
       end
       if first
@@ -412,7 +414,12 @@ def to_json
     elsif (get_index(ent) == 0) && (not get_index(ent).nil?)
       ent.definition.entities.each do |enx|
         if katab == false
-          json_string << " , \"floors\" : [ "
+          if awel
+            json_string << "\"floors\" : [ "
+            awel = false
+          else
+            json_string << " , \"floors\" : [ "
+          end
           katab = true
         end
         if first
@@ -447,14 +454,21 @@ def to_json
       end
     end
   end
-  json_string << "] "
+  if katab
+    json_string << "] "
+  end
+
   katab = false
   first = true
-
   ents.each do |ent|
     if (get_index(ent) == 2) && (not get_index(ent).nil?)
       if katab == false
-        json_string << " , \"rooms\" : [ "
+        if awel
+          json_string << "\"rooms\" : [ "
+          awel = false
+        else
+          json_string << " , \"rooms\" : [ "
+        end
         katab = true
       end
       if first
@@ -489,7 +503,12 @@ def to_json
     elsif (get_index(ent) == 1) && (not get_index(ent).nil?)
       ent.definition.entities.each do |enx|
         if katab == false
-          json_string << " , \"rooms\" : [ "
+          if awel
+            json_string << "\"rooms\" : [ "
+            awel = false
+          else
+            json_string << " , \"rooms\" : [ "
+          end
           katab = true
         end
         if first
@@ -526,7 +545,12 @@ def to_json
       ent.definition.entities.each do |enx|
         enx.definition.entities.each do |enw|
           if katab == false
-            json_string << " , \"rooms\" : [ "
+            if awel
+              json_string << "\"rooms\" : [ "
+              awel = false
+            else
+              json_string << " , \"rooms\" : [ "
+            end
             katab = true
           end
           if first
@@ -562,14 +586,20 @@ def to_json
       end
     end
   end
-  json_string << "] "
+  if katab
+    json_string << "] "
+  end
   katab = false
   first = true
-
   ents.each do |ent|
     if (get_index(ent) == 3) && (not get_index(ent).nil?)
       if katab == false
-        json_string << " , \"views\" : [ "
+        if awel
+          json_string << "\"views\" : [ "
+          awel = false
+        else
+          json_string << " , \"views\" : [ "
+        end
         katab = true
       end
       if first
@@ -604,7 +634,12 @@ def to_json
     elsif (get_index(ent) == 2) && (not get_index(ent).nil?)
       ent.definition.entities.each do |enx|
         if katab == false
-          json_string << " , \"views\" : [ "
+          if awel
+            json_string << "\"views\" : [ "
+            awel = false
+          else
+            json_string << " , \"views\" : [ "
+          end
           katab = true
         end
         if first
@@ -641,7 +676,12 @@ def to_json
       ent.definition.entities.each do |enx|
         enx.definition.entities.each do |enw|
           if katab == false
-            json_string << " , \"views\" : [ "
+            if awel
+              json_string << "\"views\" : [ "
+              awel = false
+            else
+              json_string << " , \"views\" : [ "
+            end
             katab = true
           end
           if first
@@ -680,7 +720,12 @@ def to_json
         enx.definition.entities.each do |enw|
           enw.definition.entities.each do |enh|
             if katab == false
-              json_string << " , \"views\" : [ "
+              if awel
+                json_string << "\"views\" : [ "
+                awel = false
+              else
+                json_string << " , \"views\" : [ "
+              end
               katab = true
             end
             if first
@@ -717,14 +762,21 @@ def to_json
       end
     end
   end
-  json_string << "] "
+  if katab
+    json_string << "] "
+  end
+
   katab = false
   first = true
-
   ents.each do |ent|
     if (get_index(ent) == 4) && (not get_index(ent).nil?)
       if katab == false
-        json_string << " , \"components\" : [ "
+        if awel
+          json_string << "\"components\" : [ "
+          awel = false
+        else
+          json_string << " , \"components\" : [ "
+        end
         katab = true
       end
       if first
@@ -759,7 +811,12 @@ def to_json
     elsif (get_index(ent) == 3) && (not get_index(ent).nil?)
       ent.definition.entities.each do |enx|
         if katab == false
-          json_string << " , \"components\" : [ "
+          if awel
+            json_string << "\"components\" : [ "
+            awel = false
+          else
+            json_string << " , \"components\" : [ "
+          end
           katab = true
         end
         if first
@@ -796,7 +853,12 @@ def to_json
       ent.definition.entities.each do |enx|
         enx.definition.entities.each do |enw|
           if katab == false
-            json_string << " , \"components\" : [ "
+            if awel
+              json_string << "\"components\" : [ "
+              awel = false
+            else
+              json_string << " , \"components\" : [ "
+            end
             katab = true
           end
           if first
@@ -835,7 +897,12 @@ def to_json
         enx.definition.entities.each do |enw|
           enw.definition.entities.each do |enh|
             if katab == false
-              json_string << " , \"components\" : [ "
+              if awel
+                json_string << "\"components\" : [ "
+                awel = false
+              else
+                json_string << " , \"components\" : [ "
+              end
               katab = true
             end
             if first
@@ -876,7 +943,12 @@ def to_json
           enw.definition.entities.each do |enh|
             enh.definition.entities.each do |enf|
               if katab == false
-                json_string << " , \"components\" : [ "
+                if awel
+                  json_string << "\"components\" : [ "
+                  awel = false
+                else
+                  json_string << " , \"components\" : [ "
+                end
                 katab = true
               end
               if first
@@ -914,13 +986,12 @@ def to_json
       end
     end
   end
-  json_string << "] "
-  katab = false
-  first = true
-
+  if katab
+    json_string << "] "
+  end
   json_string << "   }"
-  File.open("C:/Users/Omar H/Desktop/out.json", "a") do |f|     
-    f.write(json_string)   
+  File.open("C:/Users/Omar H/Desktop/out.json", "w") do |f|     
+    f.write(json_string)
   end
 end
 

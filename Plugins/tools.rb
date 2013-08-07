@@ -465,8 +465,8 @@ cmd = UI::Command.new("Digitales Bauen") {
         $depthOffset = results[1]
         $heightOffset = results[2]
         group = Sketchup.active_model.active_entities.add_group(ss)
-        $xViewOffset = group.transformation.origin.x
-        $yViewOffset = group.transformation.origin.y
+        $xViewOffset = group.transformation.origin.x.to_f
+        $yViewOffset = group.transformation.origin.y.to_f
         gg = group.entities
         gg.each do |g|
           x = g.get_attribute 'o.h', "Component x Offset"
@@ -534,8 +534,8 @@ cmd = UI::Command.new("Digitales Bauen") {
         $roomName = results[1]
         $roomDept = results[2]
         group = Sketchup.active_model.active_entities.add_group(ss)
-        $xRoomOffset = group.transformation.origin.x
-        $yRoomOffset = group.transformation.origin.y
+        $xRoomOffset = group.transformation.origin.x.to_f
+        $yRoomOffset = group.transformation.origin.y.to_f
         gg = group.entities
         gg.each do |g|
           x = g.get_attribute 'o.h', "View x Offset"
@@ -608,9 +608,9 @@ cmd = UI::Command.new("Digitales Bauen") {
         return if not results
         $floorNo = results[0]
         group = Sketchup.active_model.active_entities.add_group(ss)
-        $xFloorOffset = group.transformation.origin.x
-        $yFloorOffset = group.transformation.origin.y
-        $zFloorOffset = group.transformation.origin.z
+        $xFloorOffset = group.transformation.origin.x.to_f
+        $yFloorOffset = group.transformation.origin.y.to_f
+        $zFloorOffset = group.transformation.origin.z.to_f
         gg = group.entities
         gg.each do |g|
           x = g.get_attribute 'o.h', "Room x Offset"
@@ -698,9 +698,9 @@ cmd = UI::Command.new("Digitales Bauen") {
           end
         end
         group = Sketchup.active_model.active_entities.add_group(ss)
-        $xBldLocation = group.transformation.origin.x
-        $yBldLocation = group.transformation.origin.y
-        $zBldLocation = group.transformation.origin.z
+        $xBldLocation = group.transformation.origin.x.to_f
+        $yBldLocation = group.transformation.origin.y.to_f
+        $zBldLocation = group.transformation.origin.z.to_f
         gg = group.entities
         gg.each do |g|
           x = g.get_attribute 'o.h', "Floor x Offset"
