@@ -1,4 +1,5 @@
 # UI.messagebox('Welcome to Digitales Bauen Architechture tool!')
+Sketchup.send_action "showRubyPanel:"
 cam = Sketchup.active_model.active_view.camera
 Sketchup.send_action("viewTop:")
 cam.perspective = false
