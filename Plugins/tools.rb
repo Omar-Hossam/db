@@ -8,6 +8,9 @@ cmd = UI::Command.new("Digitales Bauen") {
   class DBTool
     def activate
       puts "Your tool has been activated."
+
+      #exec "C:/Users/Omar H/Desktop/DBConnect.exe imp -file=\"C:/Users/Omar H/Desktop/out.json\""
+      
     end
 
     def get_words(name)

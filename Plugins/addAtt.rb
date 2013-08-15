@@ -331,6 +331,7 @@ def to_json
       json_string << " , { "
     end
     type, fs = get_type(ent.definition.name)
+    @impt = type
     json_string << "\"type\" : \"" + type + "\""
     at = ent.attribute_dictionary "o.h"
     ks = at.keys
@@ -355,6 +356,7 @@ def to_json
       json_string << " , \"" + next_t(ent) + "s\" : [ "
       first2 = true
       ent.definition.entities.each do |enw|
+        bah = false
         if first2
           json_string << "{ "
           first2 = false
@@ -385,6 +387,7 @@ def to_json
           json_string << " , \"" + next_t(enw) + "s\" : [ "
           first3 = true
           enw.definition.entities.each do |enh|
+            bah = false
             if first3
               json_string << "{ "
               first3 = false
@@ -406,7 +409,7 @@ def to_json
             end
             type4 = ""
             enh.definition.entities.each do |enf|
-              if enh.typename != "ComponentInstance"
+              if enf.typename != "ComponentInstance"
                 bah = true
                 break
               end
@@ -415,6 +418,7 @@ def to_json
               json_string << " , \"" + next_t(enh) + "s\" : [ "
               first4 = true
               enh.definition.entities.each do |enf|
+                bah = false
                 if first4
                   json_string << "{ "
                   first4 = false
@@ -445,6 +449,7 @@ def to_json
                   json_string << " , \"" + next_t(enf) + "s\" : [ "
                   first5 = true
                   enf.definition.entities.each do |eni|
+                    bah = false
                     if first5
                       json_string << "{ "
                       first5 = false
@@ -486,11 +491,12 @@ def to_json
   File.open("C:/Users/Omar H/Desktop/out.json", "w") do |f|     
     f.write(json_string)
   end
+  system("C:/test/DBConnect.exe imp -mode=#{@impt} -file=\"C:/Users/Omar H/Desktop/out.json\"")
 end
 
 if( not file_loaded?("su_examples/addAtt.rb") )
   plugs_menu = UI.menu("Plugins")
   plugs_menu.add_item("Add attributes") { add_attributes }
-  plugs_menu.add_item("json") { to_json }
+  plugs_menu.add_item("save") { to_json }
 end
 file_loaded("su_examples/addAtt.rb")
