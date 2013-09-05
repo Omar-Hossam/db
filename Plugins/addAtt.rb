@@ -494,9 +494,21 @@ def to_json
   system("C:/test/DBConnect.exe imp -mode=#{@impt} -file=\"C:/Users/Omar H/Desktop/out.json\"")
 end
 
+def read
+  code = File.open("C:/Users/Omar H/Desktop/out.json", "r")
+  code.readlines.each do |line|
+    line.split(' ').each do |word|
+      word.split('').each do |ch|
+        UI.messagebox(ch)
+      end
+    end
+  end
+end
+
 if( not file_loaded?("su_examples/addAtt.rb") )
   plugs_menu = UI.menu("Plugins")
   plugs_menu.add_item("Add attributes") { add_attributes }
   plugs_menu.add_item("save") { to_json }
+  plugs_menu.add_item("import") { read }
 end
 file_loaded("su_examples/addAtt.rb")

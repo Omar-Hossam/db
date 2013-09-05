@@ -31,6 +31,90 @@ cmd = UI::Command.new("Digitales Bauen") {
       return index
     end
 
+    def get_models(type)
+      models = []
+      case type
+      when "Extraction"
+        models = ["Please choose one", "cLabMedExtrVAVDN200",
+          "cLabMedExtrVAVDN250", "cLabMedExtrDN200", "cLabMedExtrDN250",
+          "cLabMedExtrDN75"]
+      when "Tap"
+        models = ["Please choose one", "cLabMedGasTapFrontal",
+          "cLabMedGasTapGaugeFrontal", "cLabMedGasTapRemote",
+          "cLabMedGasTapGaugeRemote"]
+      when "Faucet"
+        models = ["Please choose one", "cLabMedFaucetSingle",
+          "cLabMedFaucetDouble", "cLabMedFaucetSglLvr",
+          "cLabMedFaucetSglLvr+shower"]
+      when "Drainage"
+        models = ["Please choose one", "cLabMedDrgDripSinkBtp",
+          "cLabMedDrgDripSinkPanel", "cLabMedDrgDripSinkLargePanel",
+          "cLabMedDrgDripSinkFc", "cLabMedDrgDripSinkLargeFc", "cLabMedDrgSink"]
+      when "Electrical component"
+        models = ["Please choose one", "cLabMedEltFusebox", "cLabMedEltGround",
+          "cLabMedEltSchuko", "cLabMedEltSchukoUPS", "cLabMedEltIEC",
+          "cLabMedEltIECUPS", "cLabMedElt8P8C"]
+      end
+      return models
+    end
+
+    def get_attribs(type, model)
+      name = ""
+      values = []
+      case type
+      when "Extraction"
+        name = "mediaExtraction"
+        values = ["Please choose one", "none", "400cbm/hr", "600cbm/hr",
+          "800cbm/hr", "DN75-24hrs"]
+      when "Tap"
+        name = "mediaGasType"
+        values = ["Please choose one", "none", "CA", "inertGas-5.5",
+          "reactiveGas-5.5", "He-5.5", "Ar-5.5", "N2-5.5", "CO2-5.5", "O2-5.5",
+          "V"]
+      when "Faucet"
+        name = "mediaLiquidType"
+        values = ["Please choose one", "none", "WPC", "WPC-WPH", "WNC",
+          "WNC-WNH", "WDC", "WCF", "WCR"]
+      when "Electrical component"
+        case model
+        when "cLabMedEltFusebox"
+          name = "mediaFuseType"
+          values = ["Please choose one", "RCD-16A-4xMCB", "RCD-32A-8xMCB",
+            "RCD-64A-16xMCB"]
+        when "cLabMedEltSchuko" || "cLabMedEltSchukoUPS" || "cLabMedEltIEC" || "cLabMedEltIECUPS"
+          name = "mediaHiVoltage"
+          values = ["Please choose one", "4x230V16A", "1x400V32A", "1x400V64A",
+            "ZeroPotential"]
+        when "cLabMedElt8P8C"
+          name = "mediaTelecom"
+          values = ["Please choose one", "none", "CAT4", "CAT5", "CAT6",
+            "CAT6A", "CAT7"]
+        end
+      end
+      return name, values
+    end
+
+    def save_attribs(cmp, type, medmod, name, val)
+      a = "C:\\Users\\Omar H\\Desktop\\components\\material.skp"
+      model = Sketchup.active_model
+      definitions = model.definitions
+      b = definitions.load a
+      x = cmp.transformation.origin.x
+      y = cmp.transformation.origin.y
+      z = cmp.transformation.origin.z
+      pt = Geom::Point3d.new(x,y,z)
+      tr = Geom::Transformation.new(pt)
+      ins = model.entities.add_instance( b, tr )
+      ins.set_attribute 'o.h', "Media x Offset", 0
+      ins.set_attribute 'o.h', "Media y Offset", 0
+      ins.set_attribute 'o.h', "Media z Offset", 0
+      ins.set_attribute 'o.h', "Media Type", type
+      if name != nil && val != nil
+        ins.set_attribute 'o.h', name, val
+      end
+      ins.set_attribute 'o.h', "Media model", medmod
+    end
+
     def getMenu(menu)
       menu.add_item("Edit attributes") {
         s = Sketchup.active_model.selection
@@ -199,6 +283,71 @@ cmd = UI::Command.new("Digitales Bauen") {
         view = Sketchup.active_model.active_view
         view = view.zoom selection
       }
+      menu.add_item("Add media component"){
+        ss = Sketchup.active_model.selection
+        if ss.empty?
+          UI.messagebox("Nothing is selected, please select an object first")
+          return
+        elsif ss.first.typename != "ComponentInstance"
+          UI.messagebox("Sorry, the selected object needs to be a component")
+          return
+        elsif ss[1] != nil
+          UI.messagebox("Sorry, only one component is allowed to be selected")
+          return
+        else
+          while true
+            medias = ["Please choose one", "Extraction", "Tap", "Faucet",
+              "Drainage", "Electrical component"]
+            prompts = ["Type of media"]
+            values = [medias[0]]
+            enums = [medias.join("|")]
+            results = inputbox prompts, values, enums, "Add Media Component"
+            return if not results
+            index = medias.index(results[0])
+            if medias[index] != "Please choose one"
+              mediaType = medias[index]
+              models = get_models(mediaType)
+              while true
+                prompts = ["Model of #{mediaType}"]
+                values = [models[0]]
+                enums = [models.join("|")]
+                results = inputbox prompts, values, enums, "Get Model of Media Component"
+                return if not results
+                index = models.index(results[0])
+                if models[index] != "Please choose one"
+                  model = models[index]
+                  name, vals = get_attribs(mediaType, model)
+                  if (name == "") && (vals == [])
+                    save_attribs(ss.first, mediaType, model, nil, nil)
+                  else
+                    while true
+                      prompts = [name]
+                      values = [vals[0]]
+                      enums = [vals.join("|")]
+                      results = inputbox prompts, values, enums, "Value of Media Attribute"
+                      return if not results
+                      index = vals.index(results[0])
+                      if vals[index] != "Please choose one"
+                        val = vals[index]
+                        save_attribs(ss.first, mediaType, model, name, val)
+                        break
+                      else
+                        UI.messagebox("Please choose a value for the media model's attribute")
+                      end
+                    end
+                  end
+                  break
+                else
+                  UI.messagebox("Please choose a(n) #{mediaType} model")
+                end
+              end
+              break
+            else
+              UI.messagebox("Please choose a media type")
+            end
+          end
+        end
+      }      
       scenes_menu = menu.add_submenu("change view")
       scenes_menu.add_item("Top view") {
       Sketchup.send_action("viewTop:")
