@@ -94,10 +94,11 @@ cmd = UI::Command.new("Digitales Bauen") {
       return name, values
     end
 
-    def save_attribs(cmp, type, medmod, name, val)
+    def save_attribs(ss, type, medmod, name, val)
       a = "C:\\Users\\Omar H\\Desktop\\components\\material.skp"
       model = Sketchup.active_model
       definitions = model.definitions
+      cmp = ss.first
       b = definitions.load a
       x = cmp.transformation.origin.x
       y = cmp.transformation.origin.y
@@ -113,6 +114,48 @@ cmd = UI::Command.new("Digitales Bauen") {
         ins.set_attribute 'o.h', name, val
       end
       ins.set_attribute 'o.h', "Media model", medmod
+      cmpx = cmp.get_attribute "o.h", "Component x Offset"
+      ins.set_attribute 'o.h', "Component x Offset", cmpx
+      cmpy = cmp.get_attribute "o.h", "Component y Offset"
+      ins.set_attribute 'o.h', "Component y Offset", cmpy
+      cmpz = cmp.get_attribute "o.h", "Component z Offset"
+      ins.set_attribute 'o.h', "Component z Offset", cmpz
+      cmppos = cmp.get_attribute "o.h", "Position"
+      ins.set_attribute 'o.h', "Position", cmppos
+      cmpno = cmp.get_attribute "o.h", "Number"
+      ins.set_attribute 'o.h', "Number", cmpno
+      cmptp = cmp.get_attribute "o.h", "Component Type"
+      ins.set_attribute 'o.h', "Component Type", cmptp
+
+      test = cmp.get_attribute "o.h", "Media Count"
+      if test == nil
+        at = cmp.attribute_dictionary "o.h"
+        ks = at.keys
+        vals = []
+        ks.each do |k|
+          vals << (cmp.get_attribute "o.h", k)
+        end
+        #group1 = model.entities.add_group(ss)
+        ents = ins.definition.entities
+        eng = []
+        ents.each do |e|
+          #eng << e
+          ss.add e
+        end
+        #group2=model.entities.add_group(eng)
+        #fg = model.entities.add_group(group1,group2) 
+        group = model.entities.add_group(ss)
+        # nwcmp = group.to_component
+        # nwcmp.set_attribute "o.h", "Media Count", 1
+        # limit = ks.length
+        # i = 0
+        # while i < limit
+        #   nwcmp.set_attribute "o.h", ks[i], vals[i]
+        #   i = i + 1
+        # end
+      else
+
+      end
     end
 
     def getMenu(menu)
@@ -318,7 +361,7 @@ cmd = UI::Command.new("Digitales Bauen") {
                   model = models[index]
                   name, vals = get_attribs(mediaType, model)
                   if (name == "") && (vals == [])
-                    save_attribs(ss.first, mediaType, model, nil, nil)
+                    save_attribs(ss, mediaType, model, nil, nil)
                   else
                     while true
                       prompts = [name]
@@ -329,7 +372,7 @@ cmd = UI::Command.new("Digitales Bauen") {
                       index = vals.index(results[0])
                       if vals[index] != "Please choose one"
                         val = vals[index]
-                        save_attribs(ss.first, mediaType, model, name, val)
+                        save_attribs(ss, mediaType, model, name, val)
                         break
                       else
                         UI.messagebox("Please choose a value for the media model's attribute")
