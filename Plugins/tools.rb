@@ -95,7 +95,13 @@ cmd = UI::Command.new("Digitales Bauen") {
     end
 
     def save_attribs(ss, type, medmod, name, val)
-      a = "C:\\Users\\Omar H\\Desktop\\components\\material.skp"
+      if type == "Electrical component"
+        a = "C:\\Users\\Omar H\\Desktop\\components\\yellow_media.skp"
+      elsif type == "Drainage" || type == "Faucet"
+        a = "C:\\Users\\Omar H\\Desktop\\components\\blue_media.skp"
+      elsif type == "Tap" || type == "Extraction"
+        a = "C:\\Users\\Omar H\\Desktop\\components\\green_media.skp"
+      end
       model = Sketchup.active_model
       definitions = model.definitions
       cmp = ss.first
@@ -106,6 +112,7 @@ cmd = UI::Command.new("Digitales Bauen") {
       pt = Geom::Point3d.new(x,y,z)
       tr = Geom::Transformation.new(pt)
       ins = model.entities.add_instance( b, tr )
+
       ins.set_attribute 'o.h', "Media x Offset", 0
       ins.set_attribute 'o.h', "Media y Offset", 0
       ins.set_attribute 'o.h', "Media z Offset", 0
@@ -128,6 +135,7 @@ cmd = UI::Command.new("Digitales Bauen") {
       ins.set_attribute 'o.h', "Component Type", cmptp
 
       test = cmp.get_attribute "o.h", "Media Count"
+      med_count = 1
       if test == nil
         at = cmp.attribute_dictionary "o.h"
         ks = at.keys
@@ -135,27 +143,55 @@ cmd = UI::Command.new("Digitales Bauen") {
         ks.each do |k|
           vals << (cmp.get_attribute "o.h", k)
         end
-        #group1 = model.entities.add_group(ss)
-        ents = ins.definition.entities
-        eng = []
-        ents.each do |e|
-          #eng << e
-          ss.add e
+        group1 = model.entities.add_group(ss)
+        ss.add ins
+        group2=model.entities.add_group(ss)
+        fg = model.entities.add_group(group1,group2)
+        ents = fg.entities
+        one = ents[0]
+        two = ents[1]
+        one.explode
+        two.explode
+        nwcmp = fg.to_component
+        nwcmp.set_attribute "o.h", "Media Count", 1
+        limit = ks.length
+        i = 0
+        while i < limit
+          nwcmp.set_attribute "o.h", ks[i], vals[i]
+          i = i + 1
         end
-        #group2=model.entities.add_group(eng)
-        #fg = model.entities.add_group(group1,group2) 
-        group = model.entities.add_group(ss)
-        # nwcmp = group.to_component
-        # nwcmp.set_attribute "o.h", "Media Count", 1
-        # limit = ks.length
-        # i = 0
-        # while i < limit
-        #   nwcmp.set_attribute "o.h", ks[i], vals[i]
-        #   i = i + 1
-        # end
       else
-
+        at = cmp.attribute_dictionary "o.h"
+        ks = at.keys
+        vals = []
+        ks.each do |k|
+          vals << (cmp.get_attribute "o.h", k)
+        end
+        exp = cmp.explode      
+        exp.each do |ex|
+          if ex.typename == "ComponentInstance"
+            ss.add ex
+          end
+        end
+        group1 = model.entities.add_group(ss)
+        ss.add ins
+        group2=model.entities.add_group(ss)
+        fg = model.entities.add_group(group1,group2)
+        ents = fg.entities
+        one = ents[0]
+        two = ents[1]
+        one.explode
+        two.explode
+        nwcmp = fg.to_component
+        limit = ks.length
+        i = 0
+        while i < limit
+          nwcmp.set_attribute "o.h", ks[i], vals[i]
+          i = i + 1
+        end
+        nwcmp.set_attribute "o.h", "Media Count", test+1
       end
+      UI.messagebox("Media component added successfully! To change the media component position please move the media component to wherever you would like, then press the save image in our toolbar. \n Also to delete a media component, please delete it first then again press the save icon.")
     end
 
     def getMenu(menu)
@@ -328,6 +364,7 @@ cmd = UI::Command.new("Digitales Bauen") {
       }
       menu.add_item("Add media component"){
         ss = Sketchup.active_model.selection
+        test = ss.first.get_attribute 'o.h', "Number"
         if ss.empty?
           UI.messagebox("Nothing is selected, please select an object first")
           return
@@ -336,6 +373,9 @@ cmd = UI::Command.new("Digitales Bauen") {
           return
         elsif ss[1] != nil
           UI.messagebox("Sorry, only one component is allowed to be selected")
+          return
+        elsif test == nil
+          UI.messagebox("Sorry, this component has no attributes. Please add attributes from the plugins list first to be able to add a media component")
           return
         else
           while true
@@ -621,6 +661,59 @@ cmd.small_icon = ""
 cmd.large_icon = ""
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "rotate"
+cmd.menu_text = "Digitales Bauen"
+toolbar = toolbar.add_item cmd
+toolbar.show
+
+cmd = UI::Command.new("Digitales Bauen") { 
+  class MedPos
+    def activate
+      ss = Sketchup.active_model.selection
+      test2 = ss.first.get_attribute 'o.h', "Media Count"
+      if ss.empty?
+        UI.messagebox("Nothing is selected, please select an object first")
+        return
+      elsif ss.first.typename != "ComponentInstance"
+        UI.messagebox("Sorry, the selected object needs to be a component")
+        return
+      elsif ss[1] != nil
+        UI.messagebox("Sorry, only one component is allowed to be selected")
+        return
+      elsif test2 == nil
+        UI.messagebox("Sorry, the whole object including the furniture component and the media component is the one needed to be selected")
+      else
+        cmp = ss.first
+        f = cmp.transformation.origin
+        ox = f.x
+        oy = f.y
+        oz = f.z
+        count = 0
+        cmp.definition.entities.each do |ent|
+          test = ent.get_attribute 'o.h', "Media x Offset"
+          if test != nil
+            count = count + 1
+            ff = ent.transformation.origin
+            mx = ff.x
+            my = ff.y
+            mz = ff.z
+            ent.set_attribute 'o.h', "Media x Offset", mx-ox
+            ent.set_attribute 'o.h', "Media y Offset", my-oy
+            ent.set_attribute 'o.h', "Media z Offset", mz-oz
+          end
+        end
+        cmp.set_attribute 'o.h', "Media Count", count
+        UI.messagebox("new media component position saved and media count adjusted")
+      end
+    end  
+  end
+
+  med_pos = MedPos.new
+  Sketchup.active_model.select_tool med_pos
+}
+cmd.small_icon = "images/Save-icon.png"
+cmd.large_icon = "images/Save-icon.png"
+cmd.tooltip = "Digitales Bauen Toolbars"
+cmd.status_bar_text = "Save Media Component poisition"
 cmd.menu_text = "Digitales Bauen"
 toolbar = toolbar.add_item cmd
 toolbar.show
