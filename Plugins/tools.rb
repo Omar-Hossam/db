@@ -1,3 +1,4 @@
+#require 'json.rb'
 # UI.messagebox('Welcome to Digitales Bauen Architechture tool!')
 Sketchup.send_action "showRubyPanel:"
 cam = Sketchup.active_model.active_view.camera
@@ -96,11 +97,11 @@ cmd = UI::Command.new("Digitales Bauen") {
 
     def save_attribs(ss, type, medmod, name, val)
       if type == "Electrical component"
-        a = "C:\\Users\\Omar H\\Desktop\\components\\yellow_media.skp"
+        a = "C:\\Programme\\SketchUp\\SketchUp 2013\\Plugins\\components\\yellow_media.skp"
       elsif type == "Drainage" || type == "Faucet"
-        a = "C:\\Users\\Omar H\\Desktop\\components\\blue_media.skp"
+        a = "C:\\Programme\\SketchUp\\SketchUp 2013\\Plugins\\components\\blue_media.skp"
       elsif type == "Tap" || type == "Extraction"
-        a = "C:\\Users\\Omar H\\Desktop\\components\\green_media.skp"
+        a = "C:\\Programme\\SketchUp\\SketchUp 2013\\Plugins\\components\\green_media.skp"
       end
       model = Sketchup.active_model
       definitions = model.definitions
@@ -135,7 +136,6 @@ cmd = UI::Command.new("Digitales Bauen") {
       ins.set_attribute 'o.h', "Component Type", cmptp
 
       test = cmp.get_attribute "o.h", "Media Count"
-      med_count = 1
       if test == nil
         at = cmp.attribute_dictionary "o.h"
         ks = at.keys
@@ -702,6 +702,9 @@ cmd = UI::Command.new("Digitales Bauen") {
           end
         end
         cmp.set_attribute 'o.h', "Media Count", count
+        if count == 0
+          cmp.explode
+        end
         UI.messagebox("new media component position saved and media count adjusted")
       end
     end  
