@@ -32,8 +32,10 @@ def get_type(name)
   cmp_type = ""
   if spn[0] == 'c' && spn[1] == 'L' && spn[2] == 'a' && spn[3] == 'b'
     if spn[4] == 'F'
+
       if spn[5] == 'n'
         cmp_class = "component"
+
         if spn[7] == 'F'
           cmp_type = "Fume Cupboard"
         elsif spn[7] == 'B'
@@ -52,10 +54,12 @@ def get_type(name)
           elsif spn[8] == 'i'
             cmp_type = "Sinkmodule"
           end
+
         end
       elsif spn[5] == 'l'
         cmp_class = "floor"
       end
+
     elsif spn[4] == 'M'
       cmp_class = "component"
       cmp_type = "Media"
@@ -325,6 +329,7 @@ def to_json
   ents = Sketchup.active_model.entities
   json_string = "[ "
   first = true
+
   ents.each do |ent|
     if first
       json_string << "{ "
@@ -332,11 +337,13 @@ def to_json
     else
       json_string << " , { "
     end
+
     type, fs = get_type(ent.definition.name)
     @impt = type
     json_string << "\"type\" : \"" + type + "\""
     at = ent.attribute_dictionary "o.h"
     ks = at.keys
+
     ks.each do |k|
       val = ent.get_attribute "o.h", k
       json_string << " , \"" + k.to_s + "\" : " 
@@ -354,6 +361,7 @@ def to_json
         break
       end
     end
+
     if not bah
       json_string << " , \"" + next_t(ent) + "s\" : [ "
       first2 = true
@@ -385,6 +393,7 @@ def to_json
             break
           end
         end
+
         if not bah
           json_string << " , \"" + next_t(enw) + "s\" : [ "
           first3 = true
@@ -416,6 +425,7 @@ def to_json
                 break
               end
             end
+
             if not bah
               json_string << " , \"" + next_t(enh) + "s\" : [ "
               first4 = true
@@ -447,6 +457,7 @@ def to_json
                     break
                   end
                 end
+
                 if not bah
                   json_string << " , \"" + next_t(enf) + "s\" : [ "
                   first5 = true
@@ -490,6 +501,7 @@ def to_json
     json_string << " }"
   end
   json_string << " ]"
+
   File.open("C:/Users/Omar H/Desktop/out.json", "w") do |f|     
     f.write(json_string)
   end
@@ -505,8 +517,10 @@ def read
   ss = Sketchup.active_model.selection
   thing = hash[0]
   type = thing["type"]
+
   if type == "component"
     make_component(thing, type)  
+
   elsif type == "view"
     cmps = thing["components"]
     cmps.each do |cmp|
@@ -521,6 +535,7 @@ def read
     view.set_attribute 'o.h', "View y Offset", thing["View y Offset"]
     view.set_attribute 'o.h', "Depth Offset", thing["Depth Offset"]
     view.set_attribute 'o.h', "Height Offset", thing["Height Offset"]
+
   elsif type == "room"
     views = thing["views"]
     views.each do |view|
@@ -552,6 +567,7 @@ def read
     nroom.set_attribute 'o.h', "Room y Offset", thing["Room y Offset"]
     nroom.set_attribute 'o.h', "Room Name", thing["Room Name"]
     nroom.set_attribute 'o.h', "Room Departement", thing["Room Departement"]
+
   elsif type == "floor"
     rooms = thing["rooms"]
     rooms.each do |room|
@@ -602,6 +618,7 @@ def read
     nfloor.set_attribute 'o.h', "Floor x Offset", thing["Floor x Offset"]
     nfloor.set_attribute 'o.h', "Floor y Offset", thing["Floor y Offset"]
     nfloor.set_attribute 'o.h', "Floor z Offset", thing["Floor z Offset"]
+
   elsif type == "building"
     floors = thing["floors"]
     floors.each do |floor|
@@ -678,30 +695,6 @@ def read
     ss.add nbld
   end
   UI.messagebox("Data imported")
-  # view = hash[0]
-  # arrComp = view["components"]
-  # arrComp.each do |cmp|
-  #   name = cmp["Component Name"]
-  #   a = "C:\\Programme\\SketchUp\\SketchUp 2013\\Plugins\\#{name}.skp"
-  #   model = Sketchup.active_model
-  #   definitions = model.definitions
-  #   b = definitions.load a
-  #   x = cmp["Component x Offset"]
-  #   y = cmp["Component y Offset"]
-  #   z = cmp["Component z Offset"]
-  #   pt = Geom::Point3d.new(x,y,z)
-  #   tr = Geom::Transformation.new(pt)
-  #   ins = model.entities.add_instance( b, tr )
-  #   ss.add ins
-  # end
-
-  # code.readlines.each do |line|
-  #   line.split(' ').each do |word|
-  #     word.split('').each do |ch|
-  #       UI.messagebox(ch)
-  #     end
-  #   end
-  # end
 end
 
 def make_component(cmp, type)
@@ -726,6 +719,7 @@ def make_component(cmp, type)
   pt = Geom::Point3d.new(x,y,z)
   tr = Geom::Transformation.new(pt)
   ins = model.entities.add_instance( b, tr )
+
   ins.set_attribute 'o.h', "Workspacedepth", cmp["Workspacedepth"]
   ins.set_attribute 'o.h', "Walkspacedepth", cmp["Walkspacedepth"]
   ins.set_attribute 'o.h', "Price", cmp["Price"]
@@ -753,6 +747,7 @@ def make_component(cmp, type)
   elsif cmp["Component Type"] == "Sinkmodule"
     ins.set_attribute 'o.h', "Sink Material", cmp["Sink Material"]
   end
+
   if type == "building"
     ins.set_attribute 'o.h', "Building Name", cmp["Building Name"]
     ins.set_attribute 'o.h', "Building x Location", cmp["Building x Location"]
@@ -760,6 +755,7 @@ def make_component(cmp, type)
     ins.set_attribute 'o.h', "Building z Location", cmp["Building z Location"]
     type = "floor"
   end
+
   if type == "floor"
     ins.set_attribute 'o.h', "Floor Number", cmp["Floor Number"]
     ins.set_attribute 'o.h', "Floor x Offset", cmp["Floor x Offset"]
@@ -767,6 +763,7 @@ def make_component(cmp, type)
     ins.set_attribute 'o.h', "Floor z Offset", cmp["Floor z Offset"]
     type = "room"
   end
+
   if type == "room"
     ins.set_attribute 'o.h', "Room Number", cmp["Room Number"]
     ins.set_attribute 'o.h', "Room x Offset", cmp["Room x Offset"]
@@ -775,6 +772,7 @@ def make_component(cmp, type)
     ins.set_attribute 'o.h', "Room Departement", cmp["Room Departement"]  
     type = "view"
   end
+
   if type == "view"
     ins.set_attribute 'o.h', "View Number", cmp["View Number"]
     ins.set_attribute 'o.h', "View x Offset", cmp["View x Offset"]

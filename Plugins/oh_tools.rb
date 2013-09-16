@@ -1,27 +1,28 @@
-#require 'json.rb'
-# UI.messagebox('Welcome to Digitales Bauen Architechture tool!')
+UI.messagebox('Welcome to the LAB EDITOR')
 Sketchup.send_action "showRubyPanel:"
+
 cam = Sketchup.active_model.active_view.camera
 Sketchup.send_action("viewTop:")
 cam.perspective = false
+
 toolbar = UI::Toolbar.new "Digitales Bauen"
 cmd = UI::Command.new("Digitales Bauen") { 
   class DBTool
-    def activate
-      puts "Your tool has been activated."
 
-      #exec "C:/Users/Omar H/Desktop/DBConnect.exe imp -file=\"C:/Users/Omar H/Desktop/out.json\""
-      
+    def activate
+      puts "Your tool has been activated."  
     end
 
     def get_words(name)
       spn = name.split('')
       if spn[4] == 'F'
+
         if spn[5] == 'n'
           index = 4
         elsif spn[5] == 'l'
           index = 1
         end
+
       elsif spn[4] == 'V'
         index = 3
       elsif spn[4] == 'R'
@@ -35,27 +36,33 @@ cmd = UI::Command.new("Digitales Bauen") {
     def get_models(type)
       models = []
       case type
+
       when "Extraction"
         models = ["Please choose one", "cLabMedExtrVAVDN200",
           "cLabMedExtrVAVDN250", "cLabMedExtrDN200", "cLabMedExtrDN250",
           "cLabMedExtrDN75"]
+
       when "Tap"
         models = ["Please choose one", "cLabMedGasTapFrontal",
           "cLabMedGasTapGaugeFrontal", "cLabMedGasTapRemote",
           "cLabMedGasTapGaugeRemote"]
+
       when "Faucet"
         models = ["Please choose one", "cLabMedFaucetSingle",
           "cLabMedFaucetDouble", "cLabMedFaucetSglLvr",
           "cLabMedFaucetSglLvr+shower"]
+
       when "Drainage"
         models = ["Please choose one", "cLabMedDrgDripSinkBtp",
           "cLabMedDrgDripSinkPanel", "cLabMedDrgDripSinkLargePanel",
           "cLabMedDrgDripSinkFc", "cLabMedDrgDripSinkLargeFc", "cLabMedDrgSink"]
+
       when "Electrical component"
         models = ["Please choose one", "cLabMedEltFusebox", "cLabMedEltGround",
           "cLabMedEltSchuko", "cLabMedEltSchukoUPS", "cLabMedEltIEC",
           "cLabMedEltIECUPS", "cLabMedElt8P8C"]
       end
+
       return models
     end
 
@@ -63,39 +70,49 @@ cmd = UI::Command.new("Digitales Bauen") {
       name = ""
       values = []
       case type
+
       when "Extraction"
         name = "mediaExtraction"
         values = ["Please choose one", "none", "400cbm/hr", "600cbm/hr",
           "800cbm/hr", "DN75-24hrs"]
+
       when "Tap"
         name = "mediaGasType"
         values = ["Please choose one", "none", "CA", "inertGas-5.5",
           "reactiveGas-5.5", "He-5.5", "Ar-5.5", "N2-5.5", "CO2-5.5", "O2-5.5",
           "V"]
+
       when "Faucet"
         name = "mediaLiquidType"
         values = ["Please choose one", "none", "WPC", "WPC-WPH", "WNC",
           "WNC-WNH", "WDC", "WCF", "WCR"]
+
       when "Electrical component"
         case model
+
         when "cLabMedEltFusebox"
           name = "mediaFuseType"
           values = ["Please choose one", "RCD-16A-4xMCB", "RCD-32A-8xMCB",
             "RCD-64A-16xMCB"]
+
         when "cLabMedEltSchuko" || "cLabMedEltSchukoUPS" || "cLabMedEltIEC" || "cLabMedEltIECUPS"
           name = "mediaHiVoltage"
           values = ["Please choose one", "4x230V16A", "1x400V32A", "1x400V64A",
             "ZeroPotential"]
+
         when "cLabMedElt8P8C"
           name = "mediaTelecom"
           values = ["Please choose one", "none", "CAT4", "CAT5", "CAT6",
             "CAT6A", "CAT7"]
         end
+
       end
+
       return name, values
     end
 
     def save_attribs(ss, type, medmod, name, val)
+
       if type == "Electrical component"
         a = "C:\\Programme\\SketchUp\\SketchUp 2013\\Plugins\\components\\yellow_media.skp"
       elsif type == "Drainage" || type == "Faucet"
@@ -103,6 +120,7 @@ cmd = UI::Command.new("Digitales Bauen") {
       elsif type == "Tap" || type == "Extraction"
         a = "C:\\Programme\\SketchUp\\SketchUp 2013\\Plugins\\components\\green_media.skp"
       end
+
       model = Sketchup.active_model
       definitions = model.definitions
       cmp = ss.first
@@ -160,6 +178,7 @@ cmd = UI::Command.new("Digitales Bauen") {
           nwcmp.set_attribute "o.h", ks[i], vals[i]
           i = i + 1
         end
+
       else
         at = cmp.attribute_dictionary "o.h"
         ks = at.keys
@@ -191,10 +210,12 @@ cmd = UI::Command.new("Digitales Bauen") {
         end
         nwcmp.set_attribute "o.h", "Media Count", test+1
       end
+
       UI.messagebox("Media component added successfully! To change the media component position please move the media component to wherever you would like, then press the save image in our toolbar. \n Also to delete a media component, please delete it first then again press the save icon.")
     end
 
     def getMenu(menu)
+
       menu.add_item("Edit attributes") {
         s = Sketchup.active_model.selection
         ss = s.first
@@ -207,6 +228,7 @@ cmd = UI::Command.new("Digitales Bauen") {
         elsif ss.typename != "ComponentInstance"
           UI.messagebox("This is not a component. Entities should be grouped in components to have attributes")
           return
+
         else
           at = ss.attribute_dictionary "o.h"
           if at.nil?
@@ -218,10 +240,12 @@ cmd = UI::Command.new("Digitales Bauen") {
             ks.each do |k|
               vals << (ss.get_attribute "o.h", k)
             end
+ 
             prompts = ks
             values = vals
-            results = inputbox prompts, values, "Edit 2"
+            results = inputbox prompts, values, "Edit Attributes"
             return if not results
+
             index = 0
             name = ss.definition.name
             cats = [["Building x Location", "Building y Location",
@@ -238,6 +262,7 @@ cmd = UI::Command.new("Digitales Bauen") {
             xold = 0
             yold = 0
             zold = 0
+
             ks.each do |k|
               if k == cat[0]
                 xpos = results[index]
@@ -252,12 +277,14 @@ cmd = UI::Command.new("Digitales Bauen") {
               ss.set_attribute 'o.h', k, results[index]
               index = index + 1
             end
+
             xdif = 0.0
             ydif = 0.0
             zdif = 0.0
             xdif = xpos - xold
             ydif = ypos - yold
             zdif = zpos - zold
+
             if ind == 0
               cat2 = cats[1]
               ss.definition.entities.each do |f|
@@ -295,6 +322,7 @@ cmd = UI::Command.new("Digitales Bauen") {
                   end
                 end
               end  
+
             elsif ind == 1
               cat2 = cats[2]
               cat3 = cats[4]
@@ -323,6 +351,7 @@ cmd = UI::Command.new("Digitales Bauen") {
                   end
                 end
               end
+
             elsif ind == 2
               cat2 = cats[3]
               ss.definition.entities.each do |v|
@@ -339,6 +368,7 @@ cmd = UI::Command.new("Digitales Bauen") {
                   c.set_attribute 'o.h', cat2[1], yx
                 end
               end
+
             elsif ind == 3
               cat2 = cats[4]
               ss.definition.entities.each do |c|
@@ -350,6 +380,7 @@ cmd = UI::Command.new("Digitales Bauen") {
                 c.set_attribute 'o.h', cat2[1], yx
               end
             end
+
             pt = Geom::Point3d.new(xpos,ypos,zpos)
             t = Geom::Transformation.new(pt)
             ss.transformation= t
@@ -357,11 +388,13 @@ cmd = UI::Command.new("Digitales Bauen") {
           end
         end
       }
+
       menu.add_item("Zoom to slection"){
         selection = Sketchup.active_model.selection
         view = Sketchup.active_model.active_view
         view = view.zoom selection
       }
+
       menu.add_item("Add media component"){
         ss = Sketchup.active_model.selection
         test = ss.first.get_attribute 'o.h', "Number"
@@ -378,6 +411,7 @@ cmd = UI::Command.new("Digitales Bauen") {
           UI.messagebox("Sorry, this component has no attributes. Please add attributes from the plugins list first to be able to add a media component")
           return
         else
+
           while true
             medias = ["Please choose one", "Extraction", "Tap", "Faucet",
               "Drainage", "Electrical component"]
@@ -386,6 +420,7 @@ cmd = UI::Command.new("Digitales Bauen") {
             enums = [medias.join("|")]
             results = inputbox prompts, values, enums, "Add Media Component"
             return if not results
+
             index = medias.index(results[0])
             if medias[index] != "Please choose one"
               mediaType = medias[index]
@@ -396,10 +431,12 @@ cmd = UI::Command.new("Digitales Bauen") {
                 enums = [models.join("|")]
                 results = inputbox prompts, values, enums, "Get Model of Media Component"
                 return if not results
+
                 index = models.index(results[0])
                 if models[index] != "Please choose one"
                   model = models[index]
                   name, vals = get_attribs(mediaType, model)
+
                   if (name == "") && (vals == [])
                     save_attribs(ss, mediaType, model, nil, nil)
                   else
@@ -409,6 +446,7 @@ cmd = UI::Command.new("Digitales Bauen") {
                       enums = [vals.join("|")]
                       results = inputbox prompts, values, enums, "Value of Media Attribute"
                       return if not results
+
                       index = vals.index(results[0])
                       if vals[index] != "Please choose one"
                         val = vals[index]
@@ -417,49 +455,26 @@ cmd = UI::Command.new("Digitales Bauen") {
                       else
                         UI.messagebox("Please choose a value for the media model's attribute")
                       end
+
                     end
+
                   end
                   break
                 else
                   UI.messagebox("Please choose a(n) #{mediaType} model")
                 end
+              
               end
               break
             else
               UI.messagebox("Please choose a media type")
             end
+          
           end
+        
         end
       }      
-      scenes_menu = menu.add_submenu("change view")
-      scenes_menu.add_item("Top view") {
-      Sketchup.send_action("viewTop:")
-      cam.perspective = false
-      }
-      scenes_menu.add_item("Front view") {
-      Sketchup.send_action("viewFront:")
-      cam.perspective = false
-      }
-      scenes_menu.add_item("Bottom view") {
-      Sketchup.send_action("viewBottom:")
-      cam.perspective = false
-      }
-      scenes_menu.add_item("Back view") {
-      Sketchup.send_action("viewBack:")
-      cam.perspective = false
-      }
-      scenes_menu.add_item("Right view") {
-      Sketchup.send_action("viewRight:")
-      cam.perspective = false
-      }
-      scenes_menu.add_item("Left view") {
-      Sketchup.send_action("viewLeft:")
-      cam.perspective = false
-      }
-      scenes_menu.add_item("Iso view") {
-      Sketchup.send_action("viewIso:")
-      cam.perspective = false
-      }
+
     end
 
     def onLButtonDoubleClick(flags, x, y, view)
@@ -474,11 +489,13 @@ cmd = UI::Command.new("Digitales Bauen") {
         UI.messagebox("This is not a component. Entities should be grouped in components to have attributes")
         return
       else
+
         m = model[0]
         at = m.attribute_dictionary "o.h"
         if at == nil
           UI.messagebox("Sorry, no attributes added yet")
         else
+
           ks = at.keys
           message = ""
           ks.each do |k|
@@ -486,7 +503,9 @@ cmd = UI::Command.new("Digitales Bauen") {
             message += k.to_s + ": " + val.to_s + "\n"
           end
           UI.messagebox(message)
+
         end
+
       end
     end
   end
@@ -494,8 +513,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   DB_tool = DBTool.new
   Sketchup.active_model.select_tool DB_tool
 }
-cmd.small_icon = "images/icon.jpg"
-cmd.large_icon = "images/icon.jpg"
+cmd.small_icon = "oh_images/icon.jpg"
+cmd.large_icon = "oh_images/icon.jpg"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Special design"
 cmd.menu_text = "Digitales Bauen"
@@ -514,8 +533,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Top_view = TopView.new
   Sketchup.active_model.select_tool Top_view
 }
-cmd.small_icon = "images/Top.PNG"
-cmd.large_icon = "images/Top.PNG"
+cmd.small_icon = "oh_images/Top.PNG"
+cmd.large_icon = "oh_images/Top.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Top view"
 cmd.menu_text = "Digitales Bauen"
@@ -534,8 +553,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Bottom_view = BottomView.new
   Sketchup.active_model.select_tool Bottom_view
 }
-cmd.small_icon = "images/Bottom.PNG"
-cmd.large_icon = "images/Bottom.PNG"
+cmd.small_icon = "oh_images/Bottom.PNG"
+cmd.large_icon = "oh_images/Bottom.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Bottom view"
 cmd.menu_text = "Digitales Bauen"
@@ -554,8 +573,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Front_view = FrontView.new
   Sketchup.active_model.select_tool Front_view
 }
-cmd.small_icon = "images/Front.PNG"
-cmd.large_icon = "images/Front.PNG"
+cmd.small_icon = "oh_images/Front.PNG"
+cmd.large_icon = "oh_images/Front.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Front view"
 cmd.menu_text = "Digitales Bauen"
@@ -574,8 +593,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Back_view = BackView.new
   Sketchup.active_model.select_tool Back_view
 }
-cmd.small_icon = "images/Back.PNG"
-cmd.large_icon = "images/Back.PNG"
+cmd.small_icon = "oh_images/Back.PNG"
+cmd.large_icon = "oh_images/Back.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Back view"
 cmd.menu_text = "Digitales Bauen"
@@ -594,8 +613,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Iso_view = IsoView.new
   Sketchup.active_model.select_tool Iso_view
 }
-cmd.small_icon = "images/Iso.PNG"
-cmd.large_icon = "images/Iso.PNG"
+cmd.small_icon = "oh_images/Iso.PNG"
+cmd.large_icon = "oh_images/Iso.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Iso view"
 cmd.menu_text = "Digitales Bauen"
@@ -614,8 +633,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Left_view = LeftView.new
   Sketchup.active_model.select_tool Left_view
 }
-cmd.small_icon = "images/Left.PNG"
-cmd.large_icon = "images/Left.PNG"
+cmd.small_icon = "oh_images/Left.PNG"
+cmd.large_icon = "oh_images/Left.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Left view"
 cmd.menu_text = "Digitales Bauen"
@@ -634,33 +653,10 @@ cmd = UI::Command.new("Digitales Bauen") {
   Right_view = RightView.new
   Sketchup.active_model.select_tool Right_view
 }
-cmd.small_icon = "images/Right.PNG"
-cmd.large_icon = "images/Right.PNG"
+cmd.small_icon = "oh_images/Right.PNG"
+cmd.large_icon = "oh_images/Right.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Right view"
-cmd.menu_text = "Digitales Bauen"
-toolbar = toolbar.add_item cmd
-toolbar.show
-
-cmd = UI::Command.new("Digitales Bauen") { 
-  class Rotate
-    def activate
-      cmp = Sketchup.active_model.selection.first
-      pt1 = Geom::Point3d.new
-      vector = Geom::Vector3d.new 0,0,1
-      p = Math::PI
-      transformation = Geom::Transformation.rotation pt1, vector, 0.5*p
-      cmp.transform! transformation
-    end  
-  end
-
-  rotato = Rotate.new
-  Sketchup.active_model.select_tool rotato
-}
-cmd.small_icon = ""
-cmd.large_icon = ""
-cmd.tooltip = "Digitales Bauen Toolbars"
-cmd.status_bar_text = "rotate"
 cmd.menu_text = "Digitales Bauen"
 toolbar = toolbar.add_item cmd
 toolbar.show
@@ -682,6 +678,7 @@ cmd = UI::Command.new("Digitales Bauen") {
       elsif test2 == nil
         UI.messagebox("Sorry, the whole object including the furniture component and the media component is the one needed to be selected")
       else
+
         cmp = ss.first
         f = cmp.transformation.origin
         ox = f.x
@@ -701,6 +698,7 @@ cmd = UI::Command.new("Digitales Bauen") {
             ent.set_attribute 'o.h', "Media z Offset", mz-oz
           end
         end
+
         cmp.set_attribute 'o.h', "Media Count", count
         if count == 0
           cmp.explode
@@ -713,8 +711,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   med_pos = MedPos.new
   Sketchup.active_model.select_tool med_pos
 }
-cmd.small_icon = "images/Save-icon.png"
-cmd.large_icon = "images/Save-icon.png"
+cmd.small_icon = "oh_images/Save-icon.png"
+cmd.large_icon = "oh_images/Save-icon.png"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Save Media Component poisition"
 cmd.menu_text = "Digitales Bauen"
@@ -746,6 +744,7 @@ cmd = UI::Command.new("Digitales Bauen") {
       elsif bawazan == true
         UI.messagebox("One or more of the components selected don't have attributes or is not of a component class. Please make sure that all selected objects are from the component class and add attributes to all components first")
       else
+
         $value = "001"
         $depthOffset = 150
         $heightOffset = 200
@@ -753,12 +752,14 @@ cmd = UI::Command.new("Digitales Bauen") {
         values = [$value, $depthOffset, $heightOffset]
         results = inputbox prompts, values, "Make View"
         return if not results
+
         $value = results[0]
         $depthOffset = results[1]
         $heightOffset = results[2]
         group = Sketchup.active_model.active_entities.add_group(ss)
         $xViewOffset = group.transformation.origin.x.to_f
         $yViewOffset = group.transformation.origin.y.to_f
+
         gg = group.entities
         gg.each do |g|
           x = g.get_attribute 'o.h', "Component x Offset"
@@ -789,8 +790,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Make_View = MakeView.new
   Sketchup.active_model.select_tool Make_View
 }
-cmd.small_icon = "images/view.PNG"
-cmd.large_icon = "images/view.PNG"
+cmd.small_icon = "oh_images/view.PNG"
+cmd.large_icon = "oh_images/view.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Make a view"
 cmd.menu_text = "Digitales Bauen"
@@ -815,6 +816,7 @@ cmd = UI::Command.new("Digitales Bauen") {
       elsif bawazan == true
         UI.messagebox("Not all selected objects are from the View class. Please make sure when creating a room that all objects are Views")
       else
+
         $roomNo = "001"
         $roomName = ""
         $roomDept = ""
@@ -822,12 +824,14 @@ cmd = UI::Command.new("Digitales Bauen") {
         values = [$roomNo, $roomName, $roomDept]
         results = inputbox prompts, values, "Make Room"
         return if not results
+
         $roomNo = results[0]
         $roomName = results[1]
         $roomDept = results[2]
         group = Sketchup.active_model.active_entities.add_group(ss)
         $xRoomOffset = group.transformation.origin.x.to_f
         $yRoomOffset = group.transformation.origin.y.to_f
+
         gg = group.entities
         gg.each do |g|
           x = g.get_attribute 'o.h', "View x Offset"
@@ -867,8 +871,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Make_Room = MakeRoom.new
   Sketchup.active_model.select_tool Make_Room
 }
-cmd.small_icon = "images/room.PNG"
-cmd.large_icon = "images/room.PNG"
+cmd.small_icon = "oh_images/room.PNG"
+cmd.large_icon = "oh_images/room.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Make a room"
 cmd.menu_text = "Digitales Bauen"
@@ -893,16 +897,19 @@ cmd = UI::Command.new("Digitales Bauen") {
       elsif bawazan == true
         UI.messagebox("Not all selected objects are from the View class. Please make sure when creating a room that all objects are Views")
       else
+
         $floorNo = "000"
         prompts = ["Floor Number"]
         values = [$floorNo]
         results = inputbox prompts, values, "Make Floor"
         return if not results
+
         $floorNo = results[0]
         group = Sketchup.active_model.active_entities.add_group(ss)
         $xFloorOffset = group.transformation.origin.x.to_f
         $yFloorOffset = group.transformation.origin.y.to_f
         $zFloorOffset = group.transformation.origin.z.to_f
+
         gg = group.entities
         gg.each do |g|
           x = g.get_attribute 'o.h', "Room x Offset"
@@ -950,8 +957,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Make_Floor = MakeFloor.new
   Sketchup.active_model.select_tool Make_Floor
 }
-cmd.small_icon = "images/floor.PNG"
-cmd.large_icon = "images/floor.PNG"
+cmd.small_icon = "oh_images/floor.PNG"
+cmd.large_icon = "oh_images/floor.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Make a floor"
 cmd.menu_text = "Digitales Bauen"
@@ -976,12 +983,14 @@ cmd = UI::Command.new("Digitales Bauen") {
       elsif bawazan == true
         UI.messagebox("Not all selected objects are from the View class. Please make sure when creating a room that all objects are Views")
       else
+
         $bldName = ""
         while true
           prompts = ["Building Name"]
           values = [$bldName]
           results = inputbox prompts, values, "Make Building"
           return if not results
+
           $bldName = results[0]
           if $bldName.empty?
             UI.messagebox("Building Name can't be blank")
@@ -993,6 +1002,7 @@ cmd = UI::Command.new("Digitales Bauen") {
         $xBldLocation = group.transformation.origin.x.to_f
         $yBldLocation = group.transformation.origin.y.to_f
         $zBldLocation = group.transformation.origin.z.to_f
+
         gg = group.entities
         gg.each do |g|
           x = g.get_attribute 'o.h', "Floor x Offset"
@@ -1051,8 +1061,8 @@ cmd = UI::Command.new("Digitales Bauen") {
   Make_Building = MakeBuilding.new
   Sketchup.active_model.select_tool Make_Building
 }
-cmd.small_icon = "images/build.PNG"
-cmd.large_icon = "images/build.PNG"
+cmd.small_icon = "oh_images/build.PNG"
+cmd.large_icon = "oh_images/build.PNG"
 cmd.tooltip = "Digitales Bauen Toolbars"
 cmd.status_bar_text = "Make a building"
 cmd.menu_text = "Digitales Bauen"
