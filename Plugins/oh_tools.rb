@@ -112,15 +112,18 @@ cmd = UI::Command.new("Digitales Bauen") {
     end
 
     def save_attribs(ss, type, medmod, name, val)
-
+      @dbconnectPath = "C:/test/DbConnect"
+      a = ""
       if type == "Electrical component"
-        a = "C:\\Users\\Omar H\\Desktop\\components\\yellow_media.skp"
+        a = @dbconnectPath + "\\components\\yellow_media.skp"
+        #a = "C:\\Users\\Omar H\\Desktop\\components\\yellow_media.skp"
         #a = "C:\\Programme\\SketchUp\\SketchUp 2013\\Plugins\\components\\yellow_media.skp"
       elsif type == "Drainage" || type == "Faucet"
-        a = "C:\\Users\\Omar H\\Desktop\\components\\blue_media.skp"
+        a = @dbconnectPath + "\\components\\blue_media.skp"
         #a = "C:\\Programme\\SketchUp\\SketchUp 2013\\Plugins\\components\\blue_media.skp"
       elsif type == "Tap" || type == "Extraction"
-        a = "C:\\Users\\Omar H\\Desktop\\components\\green_media.skp"
+        UI.messagebox(@dbconnectPath)
+        a = @dbconnectPath + "\\components\\green_media.skp"
         #a = "C:\\Programme\\SketchUp\\SketchUp 2013\\Plugins\\components\\green_media.skp"
       end
 
