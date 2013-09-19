@@ -1,8 +1,7 @@
 require 'sketchup.rb'
-#require 'rubygems'
 require 'json.rb'
 
-@dbconnectPath = "C:/test/DbConnect"
+@dbconnectPath = "C:/test"
 
 def self.add_attributes
   ss = Sketchup.active_model.selection
@@ -507,7 +506,7 @@ def to_json
   File.open(path, "w") do |f|     
     f.write(json_string)
   end
-  system(@dbconnectPath + "/DBConnect.exe imp -mode=#{@impt} -file=\"C:/Users/Omar H/Desktop/out.json\"")
+  system(@dbconnectPath + "/DBConnect.exe imp -mode=#{@impt} -file=#{path}")
 end
 
 def read
@@ -673,8 +672,7 @@ def read
   if File.exist?(tempfile)
     File.delete(tempfile)
   end
-  cmdstring = @dbconnectPath + "/DBConnect.exe  -#{oclass}=#{value} exp -file=\""  + tempfile + "\"" 
-  UI.messagebox(cmdstring)
+  cmdstring = @dbconnectPath + "/DBConnect.exe  -#{oclass}=#{value} exp -file=\""  + tempfile + "\""
   system(cmdstring)
   count = 0
   while true
@@ -885,8 +883,6 @@ def make_component(cmp, type, view, room, floor, building)
   model = Sketchup.active_model
   name = cmp["Component Name"]
   a = @dbconnectPath + "\\components\\#{name}.skp"
-  #a = "C:\\Users\\Omar H\\Desktop\\components\\#{name}.skp"
-  #a = "C:\\Programme\\SketchUp\\SketchUp 2013\\Plugins\\components\\#{name}.skp"
   definitions = model.definitions
   b = definitions.load a
   if type == "component"
